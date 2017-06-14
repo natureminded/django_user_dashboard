@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Load Access to Django Static Files -->
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Load Django Static CSS Sheet -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
+    <title>User Dashboard</title>
+</head>
+<body>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/users/show/{{logged_in_user.id}}">Profile</a>
+    <a href="/logout">Log off</a>
+    <fieldset>
+        <legend>
+            <h1>All Users</h1>
+        </legend>
+        <table>
+        <tr>
+            <th>ID:</th>
+            <th>Name^:</th>
+            <th>Email:</th>
+            <th>Created:</th>
+            <th>User Level:</th>
+        </tr>
+        <!-- use Django to iterate through items inside of `all_users` dictionary -->
+        {% if all_users %}
+            {% for user in all_users %}
+                <tr>
+                    <!-- ID -->
+                    <td>{{user.id}}</td>
+                    <!-- Full Name -->
+                    <td><a href="/users/show/{{user.id}}" alt="{{user.first_name}} {{user.last_name}}">{{user.first_name}} {{user.last_name}}</a></td>
+                    <!-- Email -->
+                    <td>{{user.email}}</td>
+                    <!-- Created  -->
+                    <td>{{user.created_at}}</td>
+                    <!-- User Level  -->
+                    <td>{% if user.user_level == 0 %} Normal {% endif %}{% if user.user_level == 1 %} Admin {% endif %}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        </table>
+    </fieldset>
+</body>
+</html>

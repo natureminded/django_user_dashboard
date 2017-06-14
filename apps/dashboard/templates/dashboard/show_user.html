@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Load Access to Django Static Files -->
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Load Django Static CSS Sheet -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
+    <title>User: {{show_user.first_name}} {{show_user.last_name}}</title>
+</head>
+<body>
+    <!-- Navigation -->
+    <a {% if logged_in_user.user_level == 0 %} href="/dashboard/admin" {% endif %} {% if logged_in_user.user_level == 1 %} href="/dashboard" {% endif %}>Dashboard</a>
+    <a href="/users/show/{{logged_in_user.id}}">Profile</a>
+    <a href="/logout">Log off</a>
+    <!-- User Profile Data -->
+    <fieldset>
+        <legend>
+            <h1>{{show_user.first_name}} {{show_user.last_name}}</h1>
+        </legend>
+        <table>
+        <ul>
+            <li>Registered at: {{show_user.created_at}}</li>
+            <li>User ID: {{show_user.id}}</li>
+            <li>Email Address: {{show_user.email}}</li>
+            <li>Description: {{show_user.description}}</li>
+        </ul>
+    </fieldset>
+    <!-- Leave a Message -->
+    <h2>Leave a message for {{show_user.first_name}}</h2>
+    <form action="/users/show/{{show_user.id}}" method="POST">
+        {% csrf_token %}
+        <!-- Message Errors -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "msg_errors error" %}
+                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <textarea name="description" id="description" cols="30" rows="10"></textarea>
+        <input type="submit" value="Post">
+    </form>
+    <!-- Current Messages -->
+    {% if user_messages %}
+        {% for message in user_messages %}
+            <div>
+                <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a> wrote:</p>
+                <p>{{message.created_at|timesince}}</p>
+                <p>{{message.description}}</p>
+                <div class="comments">
+                    {{message.comment.id}}
+                    <p><a href=#>Tim Knab</a> wrote:</p>
+                    <p>15 minutes ago</p>
+                    <p>Yo Yo yo.</p>
+                    <form action="/users/show/{{show_user.id}}/comment" method="POST">
+                        <textarea name="WHAT-SHOULD-GO-HERE" id="WHAT-SHOULD-GO-HERE" cols="30" rows="10"></textarea>
+                        <input type="submit" value="Post">
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

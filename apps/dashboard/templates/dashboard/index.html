@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Load Access to Django Static Files -->
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Load Django Static CSS Sheet -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
+    <title>User Dashboard</title>
+</head>
+<body>
+    <fieldset>
+        <legend>
+            <h1>Welcome to the User Dashboard</h1>
+        </legend>
+        <!-- Logout Success Message -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "index_msg" %}
+                    <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                        {{ message }}
+                    </p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <a href="/">Home</a>
+        <a href="/signin">Sign In</a>
+        <p>This is an MVC framework which allows for the CRUD events of various Users, Messages and Comments.</p>
+        <a href="/register">Let's Begin</a>
+    </fieldset>
+    <h2>Manage Users</h2>
+    <p>In this application, you'll be able to add, remove and edit users.</p>
+    <h2>Leave Messages</h2>
+    <p>Users can leave messages to other users, and respond to one another.</p>
+    <h2>Edit User Information</h2>
+    <p>Admins can edit other user's information. Normal users can edit only their own.</p>
+</body>
+</html>
