@@ -47,18 +47,30 @@
     </form>
     <!-- Current Messages -->
     {% if user_messages %}
+        <!-- Message -->
         {% for message in user_messages %}
             <div>
                 <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a> wrote:</p>
-                <p>{{message.created_at|timesince}}</p>
+                <p>{{message.created_at|timesince}} ago</p>
                 <p>{{message.description}}</p>
+                <!-- Comments -->
                 <div class="comments">
-                    {{message.comment.id}}
-                    <p><a href=#>Tim Knab</a> wrote:</p>
-                    <p>15 minutes ago</p>
-                    <p>Yo Yo yo.</p>
+                    <!-- Comment -->
+                    {% if message.comment.all %}
+                        {% for message in message.comment.all %}
+                            <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a></p>
+                            <p>{{message.created_at|timesince}} ago</p>
+                            <p>{{message.description}}</p>
+                        {% endfor %}
+                    {% endif %}
+                    <!-- New Comment -->
                     <form action="/users/show/{{show_user.id}}/comment" method="POST">
-                        <textarea name="WHAT-SHOULD-GO-HERE" id="WHAT-SHOULD-GO-HERE" cols="30" rows="10"></textarea>
+                        {% csrf_token %}
+                        <!-- Message ID is passed in hidden input -->
+                        <input type="hidden" name="message_id" value="{{message.id}}">
+                        <!-- Comment Text -->
+                        <textarea name="desc_{{message.id}}" id="desc_{{message.id}}" cols="30" rows="10"></textarea>
+                        <!-- Post Button -->
                         <input type="submit" value="Post">
                     </form>
                 </div>

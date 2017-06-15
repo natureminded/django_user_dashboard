@@ -226,7 +226,12 @@ class MessageManager(models.Manager):
     """Additional instance method functions for `Message`"""
 
     def add(self, **kwargs):
-        """Validates and creates new message."""
+        """
+        Validates and creates new message.
+
+        Parameters:
+        - `**kwargs` - Dictionary list of message to be created.
+        """
 
         errors = []
 
@@ -239,12 +244,8 @@ class MessageManager(models.Manager):
             print errors["errors"]
             return errors
 
-        # Query for sender and receiver of message:
-        sender = User.objects.get(id=kwargs["sender_id"])
-        receiver = User.objects.get(id=kwargs["receiver_id"])
-        
-        # Create new message:
-        new_message = Message(description=kwargs["description"], sender=sender, receiver=receiver)
+        # Create new message with sender and receiver:
+        new_message = Message(description=kwargs["description"], sender=User.objects.get(id=kwargs["sender_id"]), receiver=User.objects.get(id=kwargs["receiver_id"]))
         new_message.save()
         return new_message
 
@@ -253,7 +254,27 @@ class CommentManager(models.Manager):
     """Additional instance method functions for `Comment`"""
 
     def add(self, **kwargs):
-        pass
+        """
+        Add a new comment
+
+        Parameters:
+        - `**kwargs` - Dictionary list of comment to be created.
+        """
+
+        errors = []
+
+        # Check if comment is empty:
+        if len(kwargs["description"]) < 1:
+            errors.append("Comment description required.")
+            errors = {
+                "errors": errors
+            }
+            return errors
+
+        # Else if no errors detected above, Get Sender, Receiver, and Message to which Comment belongs, create Comment:
+        new_comment = Comment(description=kwargs["description"], sender=User.objects.get(id=kwargs["sender_id"]), receiver=User.objects.get(id=kwargs["receiver_id"]), message=Message.objects.get(id=kwargs["message_id"]))
+        new_comment.save()
+        return new_comment
 
 class User(models.Model):
     """Creates instances of a `User`."""
@@ -282,9 +303,9 @@ class Comment(models.Model):
     """Creates instances of a `Comment`."""
 
     description = models.CharField(max_length=500)
-    sender = models.ForeignKey(User, related_name="comments_sent", on_delete=models.CASCADE) # Many:1 relationship with `User`. Delete `Message` if `User` is deleted.
+    sender = models.ForeignKey(User, related_name="comments_sent", on_delete=models.CASCADE, default=None) # Many:1 relationship with `User`. Delete `Message` if `User` is deleted.
     receiver = models.ForeignKey(User, related_name="comments_received", on_delete=models.CASCADE) # Many:1 relationship with `User`. Delete `Message` if `User` is deleted.
-    message = models.ForeignKey(Message, on_delete=models.CASCADE) # Many:1 relationship with `Message`. Delete `Comment` if `Message` is deleted.
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name="comment") # Many:1 relationship with `Message`. Delete `Comment` if `Message` is deleted.
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = CommentManager() # Adds additional instance methods to `Comment`

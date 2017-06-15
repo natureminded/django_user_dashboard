@@ -215,21 +215,29 @@ def comment(request, id):
 
     # Prepare data for models:
     comment_data = {
-        "description": request.POST["description"],
+        "description": request.POST["desc" + "_" + str(request.POST["message_id"])],
         "sender_id": request.session["user_id"], # logged in user
-        "receiver_id": id,
+        "receiver_id": id, # receipient of message (user whose profile is being viewed)
+        "message_id": request.POST["message_id"], # id of message comment belongs to
     }
 
-    # Delete user by id:
-    User.objects.get(id=id).delete()
+    # Create / validate new comment:
+    validated = Comment.objects.add(**comment_data)
 
-    # If current user is admin, redirect to admin dashboard:
-    logged_in_user = User.objects.get(id=request.session["user_id"])
-    if logged_in_user.user_level == 1:
-        return redirect('/dashboard/admin')
-    elif logged_in_user.user.level == 0:
-        # Otherwise, redirect to normal user dashboard:
-        return redirect('/dashboard')
+    # If errors, reload user show page with errors:
+    try:
+        if len(validated["errors"]) > 0:
+            print "Comment could not be created."
+            # Loop through errors and Generate Django Message for each with custom level and tag:
+            for error in validated["errors"]:
+                messages.error(request, error, extra_tags="msg_errors")
+            # Reload register page:
+            return redirect("/users/show/" + id)
+    except TypeError:
+        # If validation successful, reload show page:
+        print "Comment passed validation and has been created..."
+        return redirect("/users/show/" + id)
+
 
 
 def logout(request):
