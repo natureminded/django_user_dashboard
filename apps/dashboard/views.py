@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect
 from django.contrib import messages # access django's `messages` module.
 from models import User, Message, Comment # access our models
-import bcrypt # bcrypt for password encryption/decryption
 
 # Add extra message levels to default messaging to handle login or registration error generation:
 # https://docs.djangoproject.com/en/1.11/ref/contrib/messages/#creating-custom-message-levels
@@ -84,7 +83,7 @@ def register(request):
         }
         # Validate registration data:
         validated = User.objects.register(**reg_data) # see `./models.py`, `UserManager.register()`
-        # If errors, reload index page with errors:
+        # If errors, reload register page with errors:
         try:
             if len(validated["errors"]) > 0:
                 print "User could not be registered."
@@ -127,7 +126,7 @@ def dashboard(request):
             # If normal user, get data for normal user dashboard:
             user_data = {
                 "logged_in_user": User.objects.get(id=request.session["user_id"]),
-                "all_users": User.objects.all().order_by("first_name")
+                "all_users": User.objects.all().order_by("last_name")
             }
 
             # Remove password properties from all_users.
@@ -144,36 +143,12 @@ def dashboard(request):
             # Get data for admin user dashboard:
             admin_data = {
                 "logged_in_user": User.objects.get(id=request.session["user_id"]),
-                "all_users": User.objects.all().order_by("first_name")
+                "all_users": User.objects.all().order_by("last_name")
             }
 
             # Load admin dashboard:
             # We will not remove the passwords, as this is the admin account.
             return render(request, "dashboard/admin_dashboard.html", admin_data)
-
-    except KeyError:
-        # If session object not found, load index:
-        print "User session not validated."
-        messages.add_message(request, INDEX_MSG, "You must be logged in to view this page.", extra_tags="index_msg")
-        return redirect("/")
-
-
-def admin_dashboard(request):
-    """Loads admin dashboard."""
-
-    # Check for session before loading dashboard:
-    try:
-        request.session["user_id"]
-        print "User session validated."
-
-        # Get data for admin user dashboard:
-        admin_data = {
-            "logged_in_user": User.objects.get(id=request.session["user_id"]),
-            "all_users": User.objects.all().order_by("first_name")
-        }
-
-        # We will not remove the passwords, as this is the admin account.
-        return render(request, "dashboard/admin_dashboard.html", admin_data)
 
     except KeyError:
         # If session object not found, load index:
@@ -195,7 +170,7 @@ def show_user(request, id):
         }
         validated = Message.objects.add(**message_data)
 
-        # If errors, reload index page with errors:
+        # If errors, reload user show page with errors:
         try:
             if len(validated["errors"]) > 0:
                 print "Message could not be created."
@@ -275,9 +250,9 @@ def new_user(request):
     else:
         return redirect('/')
 
-def admin_edit_user(request, id):
+def admin_update_user(request, id):
     """
-    If GET, load admin edit user page, if POST, update user information.
+    If GET, load admin edit user page, if POST, updates a user.
 
     Parameters:
     - `id` - Id of the user who we wish to edit.
@@ -308,7 +283,7 @@ def admin_edit_user(request, id):
         # This would only fire if session key is invalid, or if id submitted is non integer:
         return redirect('/')
 
-def edit_profile(request):
+def update_profile(request):
     """If GET, load edit user profile page, if POST, update user information."""
 
     try:
@@ -318,7 +293,32 @@ def edit_profile(request):
         # If POST method, validate and update user information:
         if request.method == "POST":
             # Prepare profile information and validate and update
-            pass
+            profile_data = {
+                "email": request.POST["email"],
+                "first_name": request.POST["first_name"],
+                "last_name": request.POST["last_name"],
+                "user_id": request.session["user_id"] # we'll use user id to do some validations for email
+            }
+
+            # Validate and update user:
+            validated = User.objects.update_profile(**profile_data)
+
+            # If errors, reload profile page with errors:
+            try:
+                if len(validated["errors"]) > 0:
+                    print "User could not be updated."
+                    # Loop through errors and Generate Django Message for each with custom level and tag:
+                    for error in validated["errors"]:
+                        messages.error(request, error, extra_tags="profile_errors")
+                    # Reload edit profile page:
+                    return redirect("/users/edit")
+            except TypeError:
+                # If validation successful, set session and load dashboard based on user level:
+                print "User passed validation and has been created..."
+                # Create success message:
+                messages.success(request, 'User profile {} {} has been updated.'.format(validated.first_name, validated.last_name))
+                # Redirect to dashboard:
+                return redirect('/dashboard')
 
         else:
             # Else GET currently logged in user and load edit user profile page:
@@ -332,6 +332,104 @@ def edit_profile(request):
     except KeyError:
         # This would only fire if session key is invalid:
         return redirect('/')
+
+def update_password(request):
+    """Update user password."""
+
+    try:
+        # Check if user has valid session:
+        request.session["user_id"]
+
+        # If POST method, validate and update user password:
+        if request.method == "POST":
+            # Prepare profile information and validate and update
+            pass_data = {
+                "password": request.POST["password"],
+                "confirm_pwd": request.POST["confirm_pwd"],
+                "user_id": request.session["user_id"],
+            }
+
+            # Validate and update user:
+            validated = User.objects.update_password(**pass_data)
+
+            # If errors, reload profile page with errors:
+            try:
+                if len(validated["errors"]) > 0:
+                    print "User password could not be updated."
+                    # Loop through errors and Generate Django Message for each with custom level and tag:
+                    for error in validated["errors"]:
+                        messages.error(request, error, extra_tags="password_errors")
+                    # Reload edit profile page:
+                    return redirect("/users/edit")
+            except TypeError:
+                # If validation successful, set session and load dashboard based on user level:
+                print "User password has been updated..."
+                # Create success message:
+                messages.success(request, 'Password updated.')
+                # Redirect to dashboard:
+                return redirect('/dashboard')
+
+        else:
+            # Else GET currently logged in user and load edit user profile page:
+            user = {
+                "user": User.objects.get(id=request.session["user_id"]) # retreive user with current session
+            }
+
+            # Load edit profile page with current session user:
+            return render(request, "dashboard/user_edit_profile.html", user)
+
+    except KeyError:
+        # This would only fire if session key is invalid:
+        return redirect('/')
+
+def update_description(request):
+    """Update user description."""
+
+    try:
+        # Check if user has valid session:
+        request.session["user_id"]
+
+        # If POST method, validate and update user password:
+        if request.method == "POST":
+            # Prepare profile information and validate and update
+            desc_data = {
+                "description": request.POST["description"],
+                "user_id": request.session["user_id"],
+            }
+
+            # Validate and update description:
+            validated = User.objects.update_description(**desc_data)
+
+            # If errors, reload profile page with errors:
+            try:
+                if len(validated["errors"]) > 0:
+                    print "User description could not be updated."
+                    # Loop through errors and Generate Django Message for each with custom level and tag:
+                    for error in validated["errors"]:
+                        messages.error(request, error, extra_tags="description_errors")
+                    # Reload edit profile page:
+                    return redirect("/users/edit")
+            except TypeError:
+                # If validation successful, set session and load dashboard based on user level:
+                print "User description has been updated..."
+                # Create success message:
+                messages.success(request, 'Description updated.')
+                # Redirect to dashboard:
+                return redirect('/dashboard')
+
+        else:
+            # Else GET currently logged in user and load edit user profile page:
+            user = {
+                "user": User.objects.get(id=request.session["user_id"]) # retreive user with current session
+            }
+
+            # Load edit profile page with current session user:
+            return render(request, "dashboard/user_edit_profile.html", user)
+
+    except KeyError:
+        # This would only fire if session key is invalid:
+        return redirect('/')
+
 
 def delete_user(request, id):
     """Delete a user."""
@@ -375,6 +473,16 @@ def comment(request, id):
         print "Comment passed validation and has been created..."
         return redirect("/users/show/" + id)
 
+
+# def admin_update_user(request, id):
+#     """Admin update a user's email, first name, last name and email."""
+#
+#     pass
+#
+# def admin_update_password(request, id):
+#     """Admin update a user's password."""
+#
+#     pass
 
 
 def logout(request):

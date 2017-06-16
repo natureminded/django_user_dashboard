@@ -19,14 +19,10 @@
         <a href="/users/edit">Profile</a>
         <a href="/logout">Log off</a>
     </p>
-    <!-- Return To Dashboard Button -->
-    <form action="/dashboard" method="GET">
-        <input type="submit" value="Return To Dashboard">
-    </form>
     <!-- Edit Profile -->
     <fieldset>
         <legend>
-            <h2>Edit Profile Information</h2>
+            <h2>Edit Profile for {{user.first_name}} {{user.last_name}}</h2>
         </legend>
         <!-- Edit Profiel Errors -->
         {% if messages %}
@@ -102,11 +98,19 @@
             <!-- Django-required CSRF Token (to prevent spoofing) -->
             {% csrf_token %}
             <label for="description">
-                <textarea name="description" id="description" cols="30" rows="10"></textarea>
+                <textarea name="description" id="description" cols="30" rows="10">{{user.description}}</textarea>
             </label>
             <input type="submit" value="Save">
         </form>
     </fieldset>
+
+    <p>
+        <!-- Return To Dashboard -->
+        <form action="/dashboard" method="GET">
+            <input type="submit" value="Return To Dashboard">
+        </form>
+    </p>
+
 </body>
 
 </html>
