@@ -11,10 +11,12 @@
     <title>User: {{show_user.first_name}} {{show_user.last_name}}</title>
 </head>
 <body>
-    <!-- Navigation -->
-    <a {% if logged_in_user.user_level == 0 %} href="/dashboard/admin" {% endif %} {% if logged_in_user.user_level == 1 %} href="/dashboard" {% endif %}>Dashboard</a>
-    <a href="/users/show/{{logged_in_user.id}}">Profile</a>
-    <a href="/logout">Log off</a>
+    <!-- Top Navigation -->
+    <p>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/users/edit">Profile</a>
+        <a href="/logout">Log off</a>
+    </p>
     <!-- User Profile Data -->
     <fieldset>
         <legend>

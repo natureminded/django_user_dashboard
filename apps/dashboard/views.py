@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect
 from django.contrib import messages # access django's `messages` module.
 from models import User, Message, Comment # access our models
+import bcrypt # bcrypt for password encryption/decryption
 
 # Add extra message levels to default messaging to handle login or registration error generation:
 # https://docs.djangoproject.com/en/1.11/ref/contrib/messages/#creating-custom-message-levels
@@ -255,9 +256,6 @@ def new_user(request):
             except KeyError:
                 # If validation successful, set session and load dashboard based on user level:
                 print "User passed validation and has been created..."
-                print "//////"
-                print validated
-                print "//////"
                 # Create success message:
                 messages.success(request, 'New user ({} {}) has been created.'.format(validated["logged_in_user"].first_name, validated["logged_in_user"].last_name))
                 # Redirect to dashboard:
@@ -277,12 +275,63 @@ def new_user(request):
     else:
         return redirect('/')
 
-def edit_user(request, id):
-    """If GET, load edit user page, if POST, edit user information."""
+def admin_edit_user(request, id):
+    """
+    If GET, load admin edit user page, if POST, update user information.
 
-    # Get user by ID, load edit user page:
+    Parameters:
+    - `id` - Id of the user who we wish to edit.
+    """
 
-    pass
+    try:
+        # Check if user has valid session and is admin:
+        if User.objects.get(id=request.session["user_id"]).user_level == 1:
+
+            # If POST, validate and update user information:
+            if request.method == "POST":
+                # Create and validate new user information
+                pass
+
+            else:
+                # Else, GET user data based by ID and load admin edit user page.
+                user_data = {
+                    "user": User.objects.get(id=id)
+                }
+                # Load edit user page with user:
+                return render(request, "dashboard/admin_edit_user.html", user_data)
+
+        else:
+            # If valid session and normal user, return to dashboard:
+            return redirect('/dashboard')
+
+    except (KeyError, ValueError) as err:
+        # This would only fire if session key is invalid, or if id submitted is non integer:
+        return redirect('/')
+
+def edit_profile(request):
+    """If GET, load edit user profile page, if POST, update user information."""
+
+    try:
+        # Check if user has valid session:
+        request.session["user_id"]
+
+        # If POST method, validate and update user information:
+        if request.method == "POST":
+            # Prepare profile information and validate and update
+            pass
+
+        else:
+            # Else GET currently logged in user and load edit user profile page:
+            user = {
+                "user": User.objects.get(id=request.session["user_id"]) # retreive user with current session
+            }
+
+            # Load edit profile page with current session user:
+            return render(request, "dashboard/user_edit_profile.html", user)
+
+    except KeyError:
+        # This would only fire if session key is invalid:
+        return redirect('/')
 
 def delete_user(request, id):
     """Delete a user."""

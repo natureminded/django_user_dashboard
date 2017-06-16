@@ -24,7 +24,7 @@ th, td {
 	padding: 10px;
 }
 
-.reg_errors, .login_errors, .msg_errors {
+.reg_errors, .login_errors, .msg_errors, .profile_errors, .password_errors, .descript_errors {
     display: block;
     background-color: red;
     color: white;

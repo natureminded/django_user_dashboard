@@ -23,42 +23,34 @@
     <form action="/dashboard" method="GET">
         <input type="submit" value="Return To Dashboard">
     </form>
-    <!-- Admin Edit User -->
+    <!-- Edit Profile -->
     <fieldset>
         <legend>
-            <h2>Edit User {{user.first_name}} {{user.last_name}}</h2>
+            <h2>Edit Profile Information</h2>
         </legend>
-        <!-- Admin Edit User Error Messages -->
+        <!-- Edit Profiel Errors -->
         {% if messages %}
             {% for message in messages %}
-                {% if message.tags == "admin_edit_errors error" %}
+                {% if message.tags == "profile_errors error" %}
                 <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
                     {{ message }}
                 </p>
                 {% endif %}
             {% endfor %}
         {% endif %}
-        <!-- Admin Edit User Form -->
-        <form action="/users/edit/{{user.id}}" method="POST">
+        <!-- Edit Information Form -->
+        <form action="/users/edit" method="POST">
             <!-- Django-required CSRF Token (to prevent spoofing) -->
             {% csrf_token %}
-            <label for="email"> Email:
-                <input type="email" name="email" id="email">
+            <label for="email"> Email Address:
+                <input type="email" name="email" id="email" value={{user.email}}>
             </label>
             <label for="first_name"> First Name:
-                <input type="text" name="first_name" id="first_name">
+                <input type="text" name="first_name" id="first_name" value="{{user.first_name}}">
             </label>
             <label for="last_name"> Last Name:
-                <input type="text" name="last_name" id="last_name">
+                <input type="text" name="last_name" id="last_name" value="{{user.last_name}}">
             </label>
-            <p>
-                <label for="user_level"> User Level:
-                    <select name="user_level" id="user_level">
-                        <option value="0">Normal</option>
-                        <option value="1">Admin</option>
-                    </select>
-                </label>
-            </p>
             <input type="submit" value="Save">
         </form>
     </fieldset>
@@ -78,7 +70,7 @@
             {% endfor %}
         {% endif %}
         <!-- Change Password Form -->
-        <form action="/users/edit/{{user.id}}/password" method="POST">
+        <form action="/users/edit/password" method="POST">
             <!-- Django-required CSRF Token (to prevent spoofing) -->
             {% csrf_token %}
             <label for="password"> Password:
@@ -88,6 +80,31 @@
                 <input type="password" name="confirm_pwd" id="confirm_pwd">
             </label>
             <input type="submit" value="Update Password">
+        </form>
+    </fieldset>
+    <!-- Edit Description -->
+    <fieldset>
+        <legend>
+            <h2>Edit Description</h2>
+        </legend>
+        <!-- Description Errors -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "description_errors error" %}
+                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <!-- Edit Description Form -->
+        <form action="/users/edit/description" method="POST">
+            <!-- Django-required CSRF Token (to prevent spoofing) -->
+            {% csrf_token %}
+            <label for="description">
+                <textarea name="description" id="description" cols="30" rows="10"></textarea>
+            </label>
+            <input type="submit" value="Save">
         </form>
     </fieldset>
 </body>

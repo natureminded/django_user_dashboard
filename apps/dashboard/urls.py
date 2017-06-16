@@ -12,7 +12,8 @@ urlpatterns = [
     url(r'^users/new$', views.new_user), # load new user form or create new user
     url(r'^users/show/(?P<id>\d*)$', views.show_user), # Show user / Create Message on User Show page
     url(r'^users/show/(?P<id>\d*)/comment$', views.comment), # Comment
-    url(r'^users/edit/(?P<id>\d*)/$', views.edit_user), # Edit a user
-    url(r'^users/edit/(?P<id>\d*)/delete/$', views.delete_user), # Delete a user
+    url(r'^users/edit/(?P<id>\d*)/$', views.admin_edit_user), # Admin Edit a user
+    url(r'^users/edit$', views.edit_profile), # Edit profile
+    url(r'^users/edit/(?P<id>\d*)/delete$', views.delete_user), # Delete a user
     url(r'^logout$', views.logout), # Logout user
 ]
