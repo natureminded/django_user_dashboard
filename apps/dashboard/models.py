@@ -42,7 +42,7 @@ class UserManager(models.Manager):
         #------------#
         # Check if email field is empty:
         if len(kwargs["email"]) < 5:
-            errors.append('Email field is required.')
+            errors.append('Email field must be at least 5 characters.')
 
         # Else if email is greater than 5 characters:
         else:
@@ -167,21 +167,6 @@ class UserManager(models.Manager):
             }
             return errors
 
-    def admin_add(self, **kwargs):
-        """
-        Creates a new User by an Administrator.
-
-        Parameters:
-        - `self` - Instance to whom this method belongs.
-        - `**kwargs` - Dictionary object of new user values from controller.
-
-        Validations:
-        - First Name / Last Name - Required; No fewer than 2 characters; letters only
-        - Email - Required, Valid Format, Not Taken
-        - Password - Required; Min 8 char, Matches Password Confirmation
-        """
-
-        pass
 
     def update_info(self, **kwargs):
         """

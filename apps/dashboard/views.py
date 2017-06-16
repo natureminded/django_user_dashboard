@@ -44,12 +44,22 @@ def login(request):
             print "Setting session data for logged in user..."
             request.session["user_id"] = validated["logged_in_user"].id
 
-            # Check user level (if 0, load normal user dashboard, if 1, load admin dashboard):
+            # Check user level:
+            # If 0, load normal user dashboard, if 1, load admin dashboard.
+            """
+            Note: We could simply redirect to the `/dashboard` route, as this
+            alone determines user level. However, because in our spec, we have
+            unique URL patterns for the regular user dashboard and the admin
+            dashboard, we have to check here again quickly to direct to the proper
+            URL, so that it appears in the browser address bar. Note: Either way,
+            the `/dashoard` route determines user level and delivers appropriate
+            dashboard template, respectively.
+            """
             if validated["logged_in_user"].user_level == 0:
-                # Redirect to normal user dashboard:
+                # Redirect to normal user dashboard route:
                 return redirect("/dashboard")
             elif validated["logged_in_user"].user_level == 1:
-                # Redirect to admin dashboard:
+                # Redirect to admin dashboard route:
                 return redirect("/dashboard/admin")
 
             # Fetch dashboard data and load dashboard page:
@@ -103,34 +113,49 @@ def register(request):
         return render(request, "dashboard/register.html")
 
 
-def user_dashboard(request):
-    """Loads normal user dashboard."""
+def dashboard(request):
+    """Loads either user or admin dashboard."""
 
-    # Check for session before loading dashboard:
+    # Check session before loading dashboard:
     try:
-        request.session["user_id"]
+        user = User.objects.get(id=request.session["user_id"])
         print "User session validated."
 
-        # Get data for normal user dashboard:
-        user_data = {
-            "logged_in_user": User.objects.get(id=request.session["user_id"]),
-            "all_users": User.objects.all().order_by("first_name")
-        }
+        # Check if Normal User:
+        if user.user_level == 0:
+            # If normal user, get data for normal user dashboard:
+            user_data = {
+                "logged_in_user": User.objects.get(id=request.session["user_id"]),
+                "all_users": User.objects.all().order_by("first_name")
+            }
 
-        # Remove password properties from all_users.
-        # Note: Because these are normal level users, p/w must be protected:
-        for user in user_data["all_users"]:
-            # delete password property
-            del user.password
+            # Remove password properties from all_users.
+            # Note: Because these are normal level users, p/w must be protected:
+            for user in user_data["all_users"]:
+                # delete password property
+                del user.password
 
-        # Load normal user dashboard:
-        return render(request, "dashboard/user_dashboard.html", user_data)
+                # Load normal user dashboard:
+                return render(request, "dashboard/user_dashboard.html", user_data)
+
+        # Check if Admin User:
+        if user.user_level == 1:
+            # Get data for admin user dashboard:
+            admin_data = {
+                "logged_in_user": User.objects.get(id=request.session["user_id"]),
+                "all_users": User.objects.all().order_by("first_name")
+            }
+
+            # Load admin dashboard:
+            # We will not remove the passwords, as this is the admin account.
+            return render(request, "dashboard/admin_dashboard.html", admin_data)
 
     except KeyError:
         # If session object not found, load index:
         print "User session not validated."
         messages.add_message(request, INDEX_MSG, "You must be logged in to view this page.", extra_tags="index_msg")
         return redirect("/")
+
 
 def admin_dashboard(request):
     """Loads admin dashboard."""
@@ -191,8 +216,71 @@ def show_user(request, id):
         }
         return render(request, "dashboard/show_user.html", user_data)
 
+def new_user(request):
+    """If GET, load admin new user page, if POST, create new user."""
+
+
+    # First ensure that only an admin may access this page:
+    user = User.objects.get(id=request.session["user_id"])
+
+    # If user is normal user, bring back to dashboard:
+    if user.user_level == 0:
+        return redirect('/dashboard')
+
+    # If user is admin, allow for either POST (create user) or GET (load add form) request:
+    if user.user_level == 1:
+
+        # If POST, prepare new user creation:
+        if request.method == "POST":
+            # Prepare data for model:
+            user_data = {
+                "first_name": request.POST["first_name"],
+                "last_name": request.POST["last_name"],
+                "email": request.POST["email"],
+                "password": request.POST["password"],
+                "confirm_pwd": request.POST["confirm_pwd"],
+            }
+
+            # Validate and create new user
+            validated = User.objects.register(**user_data)
+            # If errors, reload index page with errors:
+            try:
+                if len(validated["errors"]) > 0:
+                    print "User could not be created."
+                    # Loop through errors and Generate Django Message for each with custom level and tag:
+                    for error in validated["errors"]:
+                        messages.add_message(request, REG_ERR, error, extra_tags="reg_errors")
+                    # Reload add user page:
+                    return redirect("/users/new")
+            except KeyError:
+                # If validation successful, set session and load dashboard based on user level:
+                print "User passed validation and has been created..."
+                print "//////"
+                print validated
+                print "//////"
+                # Create success message:
+                messages.success(request, 'New user ({} {}) has been created.'.format(validated["logged_in_user"].first_name, validated["logged_in_user"].last_name))
+                # Redirect to dashboard:
+                return redirect('/dashboard')
+
+
+        else:
+            # Else, if GET, gather logged in user and load add new user page:
+            user = {
+                "logged_in_user": user,
+            }
+
+            # Load add user page:
+            return render(request, "dashboard/admin_add_user.html", user)
+
+    # In the event the user level is spoofed redirect to dashboard:
+    else:
+        return redirect('/')
+
 def edit_user(request, id):
     """If GET, load edit user page, if POST, edit user information."""
+
+    # Get user by ID, load edit user page:
 
     pass
 

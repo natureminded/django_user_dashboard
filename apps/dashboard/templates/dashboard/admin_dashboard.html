@@ -18,6 +18,19 @@
         <legend>
             <h1>All Users</h1>
         </legend>
+        <form action="/users/new" method="GET">
+            <input type="submit" value="Add New User">
+        </form>
+        <!-- Success Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "success" %}
+                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
         <table>
         <tr>
             <th>ID:</th>
