@@ -216,36 +216,69 @@ class UserManager(models.Manager):
                 if not email_regex.match(kwargs["email"]):
                     errors.append('Email format is invalid.')
                 else:
-                    # If email has not changed, pass, otherwise check if already registered:
-                    if User.objects.get(id=kwargs["user_id"]).email == kwargs["email"]:
-                        pass
-                    else:
-                        #---------------#
-                        #-- EXISTING: --#
-                        #---------------#
-                        # Check for existing User via email:
-                        if len(User.objects.filter(email=kwargs["email"])) > 0:
-                            errors.append('Email address already registered.')
+                    try:
+                        # If email has not changed, pass, otherwise check if already registered:
+                        if User.objects.get(id=kwargs["edit_user_id"]).email == kwargs["email"]:
+                            pass
+
+                        else:
+                            #---------------#
+                            #-- EXISTING: --#
+                            #---------------#
+                            # Check for existing User via email:
+                            if len(User.objects.filter(email=kwargs["email"])) > 0:
+                                errors.append('Email address already registered.')
+                    except KeyError:
+                        # If email has not changed, pass, otherwise check if already registered:
+                        if User.objects.get(id=kwargs["user_id"]).email == kwargs["email"]:
+                            pass
+                        else:
+                            #---------------#
+                            #-- EXISTING: --#
+                            #---------------#
+                            # Check for existing User via email:
+                            if len(User.objects.filter(email=kwargs["email"])) > 0:
+                                errors.append('Email address already registered.')
+
 
         # Check for validation errors:
         # If none, update information for user:
         if len(errors) == 0:
             print "User profile data update passed validation..."
+
             # Updating user:
             """
-            Development improvement: For some reason you decided to use this Dictionary
-            approach below. I believe you could simply return the direct user, unless
-            really needing a dictionary. Your errors as well. Change the `try and excet`
-            blocks to a `TypeError` instead
+            The three scenarios:
+            1. Normal User Updating their profile
+            2. Admin User Updating their profile
+            3. Admin User Updating Normal User profile (includes "edit_user_id")
             """
 
-        # Make sure user is an admin so this data cannot be spoofed, then update user along with user level:
-        if User.objects.get(id=kwargs["user_id"]).user_level == 1:
-            # Update user:
-            User.objects.filter(id=kwargs["user_id"]).update(first_name=kwargs["first_name"], last_name=kwargs["last_name"], email=kwargs["email"])
-            print "User updated."
-            # Return updated profile change:
-            return User.objects.get(id=kwargs["user_id"])
+            # If user is not admin, simply update user profile:
+            if User.objects.get(id=kwargs["user_id"]).user_level == 0:
+                User.objects.filter(id=kwargs["user_id"]).update(first_name=kwargs["first_name"], last_name=kwargs["last_name"], email=kwargs["email"])
+                print "User information updated."
+                # Return updated user:
+                return User.objects.get(id=kwargs["user_id"])
+
+
+            # If user is admin, check if this is a self profile update, or updating another user:
+            if User.objects.get(id=kwargs["user_id"]).user_level == 1:
+                # If edit_user_id exists, this is an admin edit to another user:
+                if "edit_user_id" in kwargs:
+                    print "Admin user update detected..."
+                    # Update user by `edit_user_id`, including user level:
+                    User.objects.filter(id=kwargs["edit_user_id"]).update(first_name=kwargs["first_name"], last_name=kwargs["last_name"], email=kwargs["email"], user_level=kwargs["user_level"])
+                    # Return user whom was edited:
+                    return User.objects.get(id=kwargs["edit_user_id"])
+                else:
+                    # Else if edit_user_id does not exist, this is an admin self-profile change:
+                    print "Admin profile update detected..."
+                    # Update user by `user_id`
+                    User.objects.filter(id=kwargs["user_id"]).update(first_name=kwargs["first_name"], last_name=kwargs["last_name"], email=kwargs["email"])
+                    return User.objects.get(id=kwargs["user_id"])
+
+
         else:
             # Else, if validation fails, print errors to console and return errors object:
             print "Errors validating User registration."
@@ -256,15 +289,6 @@ class UserManager(models.Manager):
                 "errors": errors,
             }
             return errors
-
-
-
-        # Retreive user by ID
-        # Validate information
-        # Update Information if passes
-        # Otherwise send back errors
-
-        pass
 
     def update_password(self, **kwargs):
         """
@@ -294,11 +318,30 @@ class UserManager(models.Manager):
         # Check for validation errors:
         # If none, hash password, create user and send new user back:
         if len(errors) == 0:
-            print "Password validated...hashing..."
-            User.objects.filter(id=kwargs["user_id"]).update(password=bcrypt.hashpw(kwargs["password"].encode(), bcrypt.gensalt(14)))
-            print "Password hashed..."
-            # Return created User:
-            return User.objects.filter(id=kwargs["user_id"])
+
+            """
+            Three Scenarios:
+            1. User updating their own password.
+            2. Admin updating their own password.
+            3. Admin updating a normal user's password.
+            """
+
+            # Check if admin is updating another user's password:
+            if "edit_user_id" in kwargs:
+                print "Admin password update for normal user detected..."
+                # Update password for user with ID as `edit_user_id`:
+                print "Password validated...hashing..."
+                User.objects.filter(id=kwargs["edit_user_id"]).update(password=bcrypt.hashpw(kwargs["password"].encode(), bcrypt.gensalt(14)))
+                print "Password hashed..."
+                # Return created User:
+                return User.objects.filter(id=kwargs["edit_user_id"])
+            else:
+                print "Profile password update detected..."
+                print "Password validated...hashing..."
+                User.objects.filter(id=kwargs["user_id"]).update(password=bcrypt.hashpw(kwargs["password"].encode(), bcrypt.gensalt(14)))
+                print "Password hashed..."
+                # Return created User:
+                return User.objects.filter(id=kwargs["user_id"])
         else:
             # Else, if validation fails, print errors to console and return errors object:
             print "Errors validating password update."

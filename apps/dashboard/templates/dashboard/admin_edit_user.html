@@ -35,7 +35,7 @@
             {% endfor %}
         {% endif %}
         <!-- Admin Edit User Form -->
-        <form action="/users/edit" method="POST">
+        <form action="/users/edit/{{user.id}}" method="POST">
             <!-- Django-required CSRF Token (to prevent spoofing) -->
             {% csrf_token %}
             <label for="email"> Email:
@@ -50,8 +50,14 @@
             <p>
                 <label for="user_level"> User Level:
                     <select name="user_level" id="user_level">
-                        <option value="0">Normal</option>
-                        <option value="1">Admin</option>
+                        {% if user.user_level == 0 %}
+                            <option value="0" selected="selected">Normal</option>
+                            <option value="1">Admin</option>
+                        {% endif %}
+                        {% if user.user_level == 1 %}
+                            <option value="0">Normal</option>
+                            <option value="1" selected="selected">Admin</option>
+                        {% endif %}
                     </select>
                 </label>
             </p>
@@ -66,7 +72,7 @@
         <!-- Change Password Errors -->
         {% if messages %}
             {% for message in messages %}
-                {% if message.tags == "password_errors error" %}
+                {% if message.tags == "admin_password_errors error" %}
                 <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
                     {{ message }}
                 </p>
@@ -74,7 +80,7 @@
             {% endfor %}
         {% endif %}
         <!-- Change Password Form -->
-        <form action="/users/edit/password" method="POST">
+        <form action="/users/edit/{{user.id}}/password" method="POST">
             <!-- Django-required CSRF Token (to prevent spoofing) -->
             {% csrf_token %}
             <label for="password"> Password:

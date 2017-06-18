@@ -1,6 +1,4 @@
 # Remaining:
-+ Admin Edit User / Edit password
-+ Normal Edit User / Edit Password
 + Confirm Delete
 + Comment errors appear in wrong section (they appear by the message field)
 + Deploy

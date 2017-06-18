@@ -252,7 +252,7 @@ def new_user(request):
 
 def admin_update_user(request, id):
     """
-    If GET, load admin edit user page, if POST, updates a user.
+    If GET, load admin edit user page, if POST, admin updates a user.
 
     Parameters:
     - `id` - Id of the user who we wish to edit.
@@ -264,8 +264,34 @@ def admin_update_user(request, id):
 
             # If POST, validate and update user information:
             if request.method == "POST":
-                # Create and validate new user information
-                pass
+                # Assemble data for model:
+                user_data = {
+                    "user_id": request.session["user_id"],
+                    "edit_user_id": id,
+                    "email": request.POST["email"],
+                    "first_name": request.POST["first_name"],
+                    "last_name": request.POST["last_name"],
+                    "user_level": request.POST["user_level"]
+                }
+                # Validate / Create (errors returned else user):
+                validated = User.objects.update_profile(**user_data)
+
+                # If errors, reload profile page with errors:
+                try:
+                    if len(validated["errors"]) > 0:
+                        print "User could not be updated."
+                        # Loop through errors and Generate Django Message for each with custom level and tag:
+                        for error in validated["errors"]:
+                            messages.error(request, error, extra_tags="admin_edit_errors")
+                        # Reload edit profile page:
+                        return redirect("/users/edit/" + id)
+                except TypeError:
+                    # If validation successful, set session and load dashboard based on user level:
+                    print "User passed validation and has been created..."
+                    # Create success message:
+                    messages.success(request, 'User profile {} {} has been updated.'.format(validated.first_name, validated.last_name))
+                    # Redirect to dashboard:
+                    return redirect('/dashboard')
 
             else:
                 # Else, GET user data based by ID and load admin edit user page.
@@ -279,8 +305,67 @@ def admin_update_user(request, id):
             # If valid session and normal user, return to dashboard:
             return redirect('/dashboard')
 
-    except (KeyError, ValueError) as err:
+    except KeyError:
+        print "Session not valid."
         # This would only fire if session key is invalid, or if id submitted is non integer:
+        return redirect('/')
+
+def admin_update_password(request, id):
+    """
+    Admin Update user password.
+
+    Parameters:
+    - `id` - ID of user for password update.
+    """
+
+    print "Admin Password Update Running"
+
+    try:
+        # Check if user has valid session:
+        request.session["user_id"]
+        # Check if user is admin:
+        if User.objects.get(id=request.session["user_id"]).user_level == 1:
+
+            # If POST method, validate and update user password:
+            if request.method == "POST":
+                # Prepare profile information and validate and update
+                pass_data = {
+                    "user_id": request.session["user_id"],
+                    "edit_user_id": id,
+                    "password": request.POST["password"],
+                    "confirm_pwd": request.POST["confirm_pwd"],
+                }
+
+                # Validate and update user:
+                validated = User.objects.update_password(**pass_data)
+
+                # If errors, reload profile page with errors:
+                try:
+                    if len(validated["errors"]) > 0:
+                        print "User password could not be updated."
+                        # Loop through errors and Generate Django Message for each with custom level and tag:
+                        for error in validated["errors"]:
+                            messages.error(request, error, extra_tags="admin_password_errors")
+                        # Reload edit profile page:
+                        return redirect("/users/edit/" + id)
+                except TypeError:
+                    # If validation successful, send success message and load dashboard:
+                    print "User password has been updated..."
+                    # Create success message:
+                    messages.success(request, 'Password updated.')
+                    # Redirect to dashboard:
+                    return redirect('/dashboard')
+
+            else:
+                # If not POST request, go home:
+                return redirect('/')
+
+        else:
+            # If not admin, go home:
+            return redirect('/')
+
+    except KeyError:
+        # If no session key, go home:
         return redirect('/')
 
 def update_profile(request):
@@ -362,7 +447,7 @@ def update_password(request):
                     # Reload edit profile page:
                     return redirect("/users/edit")
             except TypeError:
-                # If validation successful, set session and load dashboard based on user level:
+                # If validation successful, set success message and load dashboard:
                 print "User password has been updated..."
                 # Create success message:
                 messages.success(request, 'Password updated.')
@@ -370,19 +455,14 @@ def update_password(request):
                 return redirect('/dashboard')
 
         else:
-            # Else GET currently logged in user and load edit user profile page:
-            user = {
-                "user": User.objects.get(id=request.session["user_id"]) # retreive user with current session
-            }
-
-            # Load edit profile page with current session user:
-            return render(request, "dashboard/user_edit_profile.html", user)
+            # Else if not GET, go home:
+            return redirect('/')
 
     except KeyError:
         # This would only fire if session key is invalid:
         return redirect('/')
 
-def update_description(request):
+def update_profile_description(request):
     """Update user description."""
 
     try:
@@ -398,7 +478,7 @@ def update_description(request):
             }
 
             # Validate and update description:
-            validated = User.objects.update_description(**desc_data)
+            validated = User.objects.update_profile_description(**desc_data)
 
             # If errors, reload profile page with errors:
             try:
@@ -472,17 +552,6 @@ def comment(request, id):
         # If validation successful, reload show page:
         print "Comment passed validation and has been created..."
         return redirect("/users/show/" + id)
-
-
-# def admin_update_user(request, id):
-#     """Admin update a user's email, first name, last name and email."""
-#
-#     pass
-#
-# def admin_update_password(request, id):
-#     """Admin update a user's password."""
-#
-#     pass
 
 
 def logout(request):
