@@ -2,47 +2,10 @@
 /*--- MAIN STYLINGS---*/
 /*--------------------*/
 
-body {
-    width: 800px;
-    overflow-x: hidden;
-}
-
-/* Element Stylings: */
-table {
-	width: 100%;
-	text-align: left;
-	padding: 15px;
-	border-collapse: collapse;
-	margin-top: 15px;
-}
-
-tr:nth-child(even) {
-	background-color: whitesmoke;
-}
-
-th, td {
-	padding: 10px;
-}
-
-.reg_errors, .login_errors, .message_errors, .comment_errors, .profile_errors, .password_errors, .descript_errors, .admin_edit_errors, .admin_password_errors {
-    display: block;
-    background-color: red;
-    color: white;
-    padding: 10px;
-}
-
-.index_msg, .success {
-    background-color: green;
-    color: white;
-    padding: 10px;
-}
-
 .comments {
-    padding-left: 30px;
+    margin-left: 30px;
 }
 
-
-.inline-title {
-    font-weight: 400; 
-    margin: 0px;
+.margin-bottom {
+    margin-bottom: 30px;
 }

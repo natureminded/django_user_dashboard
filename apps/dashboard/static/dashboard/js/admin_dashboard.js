@@ -4,7 +4,7 @@ $( document ).ready(function() {
 
     $( '#remove' ).click(function() {
         console.log("CLICKED")
-        return confirm("Are you sure?");
+        return confirm("Are you sure (cannot be undone)?");
     });
 
 });

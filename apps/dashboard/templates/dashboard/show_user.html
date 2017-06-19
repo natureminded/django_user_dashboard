@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
     <!-- Load Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'dashboard/bower_components/bootstrap/dist/css/bootstrap.css' %}">
     <!-- Load jQuery -->
@@ -15,81 +17,154 @@
     <title>User: {{show_user.first_name}} {{show_user.last_name}}</title>
 </head>
 <body>
-    <!-- Top Navigation -->
-    <p>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/users/edit">Profile</a>
-        <a href="/logout">Log off</a>
-    </p>
-    <!-- User Profile Data -->
-    <fieldset>
-        <legend>
-            <h1>{{show_user.first_name}} {{show_user.last_name}}</h1>
-        </legend>
-        <table>
-        <ul>
-            <li>Registered at: {{show_user.created_at}}</li>
-            <li>User ID: {{show_user.id}}</li>
-            <li>Email Address: {{show_user.email}}</li>
-            <li>Description: {{show_user.description}}</li>
-        </ul>
-    </fieldset>
-    <!-- Leave a Message -->
-    <h2>Leave a message for {{show_user.first_name}}</h2>
-    <form action="/users/show/{{show_user.id}}" method="POST">
-        {% csrf_token %}
-        <!-- Message Errors -->
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == "message_errors error" %}
-                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                    {{ message }}
-                </p>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!-- Nav Header -->
+            <div class="navbar-header">
+                <!-- Mobile Button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- Branding -->
+                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-user"></span> User Dashboard</a>
+            </div>
+            <!-- Nav Collapsible Content -->
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <!-- Left Hand Nav -->
+                <ul class="nav navbar-nav">
+                    <li><a href="/dashboard"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                    <li><a href="/users/edit"><span class="glyphicon glyphicon-list-alt"></span> Profile</a></li>
+                </ul>
+                <!-- Right Hand Nav -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Off</a></li>
+                    <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Columns -->
+    <div class="container margin-bottom">
+        <!-- All Users -->
+        <div class="row">
+            <!-- User Information -->
+            <div class="col-xs-12">
+                <!-- Title -->
+                <h1>{{show_user.first_name}} {{show_user.last_name}}</h1>
+                <hr>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Registered At:</strong> {{show_user.created_at}}</li>
+                    <li class="list-group-item"><strong>User ID:</strong> {{show_user.id}}</li>
+                    <li class="list-group-item"><strong>Email Address:</strong> {{show_user.email}}</li>
+                    <li class="list-group-item"><strong>Description:</strong> {{show_user.description}}</li>
+                </ul>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                        <div class="alert alert-success alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Success!</strong> {{ message }}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
-            {% endfor %}
-        {% endif %}
-        <textarea name="description" id="description" cols="30" rows="10"></textarea>
-        <input type="submit" value="Post">
-    </form>
-    <!-- Current Messages -->
-    {% if user_messages %}
-        <!-- Message -->
-        {% for message in user_messages %}
-            <div>
-                <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a> wrote ({{message.created_at|timesince}} ago):</p>
-                <p>{{message.description}}</p>
-                <!-- Comments -->
-                <div class="comments">
-                    <!-- Comment -->
-                    {% if message.comment.all %}
-                        {% for message in message.comment.all %}
-                            <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a> wrote ({{message.created_at|timesince}} ago):</p>
-                            <p>{{message.description}}</p>
+            </div>
+            <!-- Leave Message -->
+            <div class="col-xs-12">
+                <!-- Title -->
+                <h1>Leave a Message for {{show_user.first_name}}</h1>
+                <hr>
+                <!-- Message Form -->
+                <form action="/users/show/{{show_user.id}}" method="POST" class="form-horizontal">
+                    <!-- Django-required CSRF Token (to prevent spoofing) -->
+                    {% csrf_token %}
+                    <!-- Edit Profile Errors -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == "message_errors error" %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>Error!</strong> {{ message }}
+                            </div>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
-                    <!-- New Comment -->
-                    <form action="/users/show/{{show_user.id}}/comment" method="POST">
-                        {% csrf_token %}
-                        <!-- Comment Errors -->
-                        {% if messages %}
-                            {% for message in messages %}
-                                {% if message.tags == "comment_errors error" %}
-                                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                                    {{ message }}
-                                </p>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                        <!-- Message ID is passed in hidden input -->
-                        <input type="hidden" name="message_id" value="{{message.id}}">
-                        <!-- Comment Text -->
-                        <textarea name="desc_{{message.id}}" id="desc_{{message.id}}" cols="30" rows="10"></textarea>
-                        <!-- Post Button -->
-                        <input type="submit" value="Post">
-                    </form>
-                </div>
+                    <!-- Message -->
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon">Message:</span>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-pushpin"></i></span>
+                            <textarea name="description" id="description" rows="3" class="form-control" placeholder="Enter a message for {{show_user.first_name}}"></textarea>
+                        </div>
+                    </p>
+                    <!-- Post Message -->
+                    <p>
+                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-pushpin"></span> Post</button>
+                    </p>
+                </form>
             </div>
-        {% endfor %}
-    {% endif %}
+            <!-- Current Messages -->
+            <div class="col-xs-12">
+                <h1>Messages</h1>
+                <hr>
+                <!-- Current Messages -->
+                {% if user_messages %}
+                    <!-- Message -->
+                    {% for message in user_messages %}
+                        <div class="well">
+                            <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a>, <em>{{message.created_at|timesince}} ago</em>, wrote:</p>
+                            <p>{{message.description}}</p>
+                        </div>
+                        <!-- Comments -->
+                        <div class="comments">
+                            <!-- Comment -->
+                            {% if message.comment.all %}
+                                {% for message in message.comment.all %}
+                                    <div class="well">
+                                        <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a>, <em>{{message.created_at|timesince}} ago</em> wrote:</p>
+                                        <p>{{message.description}}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <!-- New Comment Form -->
+                            <form action="/users/show/{{show_user.id}}/comment" method="POST" class="form-horizontal">
+                                <!-- Django-required CSRF Token (to prevent spoofing) -->
+                                {% csrf_token %}
+                                <!-- Comment Errors -->
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == "comment_errors error" %}
+                                        <div class="alert alert-danger alert-dismissable">
+                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                            <strong>Error!</strong> {{ message }}
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                <!-- Message ID is passed in hidden input -->
+                                <input type="hidden" name="message_id" value="{{message.id}}">
+                                <!-- Comment -->
+                                <p>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">Comment:</span>
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-pushpin"></i></span>
+                                        <textarea name="desc_{{message.id}}" id="desc_{{message.id}}" rows="3" class="form-control" placeholder="Enter a message for {{show_user.first_name}}"></textarea>
+                                    </div>
+                                </p>
+                                <!-- Save Description -->
+                                <p>
+                                    <button type="submit" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pushpin"></span> Comment</button>
+                                </p>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>

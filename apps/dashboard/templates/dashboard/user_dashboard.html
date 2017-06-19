@@ -6,14 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
     <!-- Load Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'dashboard/bower_components/bootstrap/dist/css/bootstrap.css' %}">
     <!-- Load jQuery -->
     <script type="text/javascript" src="{% static 'dashboard/bower_components/jquery/dist/jquery.js' %}"></script>
     <!-- Load Bootstrap JS -->
     <script type="text/javascript" src="{% static 'dashboard/bower_components/bootstrap/dist/js/bootstrap.js' %}"></script>
-    <!-- Dashboard JS -->
-    <script type="text/javascript" src="{% static 'dashboard/js/dashboard.js' %}"></script>
     <title>User Dashboard</title>
 </head>
 <body>
@@ -47,7 +47,7 @@
         </div>
     </nav>
     <!-- Columns -->
-    <div class="container">
+    <div class="container" margin-bottom>
         <!-- All Users -->
         <div class="row">
             <div class="col-xs-12">
@@ -65,35 +65,37 @@
                     {% endfor %}
                 {% endif %}
                 <!-- Data -->
-                <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>ID:</th>
-                        <th>Name^:</th>
-                        <th>Email:</th>
-                        <th>Created:</th>
-                        <th>User Level:</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        <!-- use Django to iterate through items inside of `all_users` dictionary -->
-                        {% if all_users %}
-                            {% for user in all_users %}
-                                <tr>
-                                    <!-- ID -->
-                                    <td>{{user.id}}</td>
-                                    <!-- Full Name -->
-                                    <td><a href="/users/show/{{user.id}}" alt="{{user.first_name}} {{user.last_name}}">{{user.first_name}} {{user.last_name}}</a></td>
-                                    <!-- Email -->
-                                    <td>{{user.email}}</td>
-                                    <!-- Created  -->
-                                    <td>{{user.created_at}}</td>
-                                    <!-- User Level  -->
-                                    <td>{% if user.user_level == 0 %} Normal {% endif %}{% if user.user_level == 1 %} Admin {% endif %}</td>                                </tr>
-                            {% endfor %}
-                        {% endif %}
-                    </tbody>
-                  </table>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>ID:</th>
+                            <th>Name^:</th>
+                            <th>Email:</th>
+                            <th>Created:</th>
+                            <th>User Level:</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <!-- use Django to iterate through items inside of `all_users` dictionary -->
+                            {% if all_users %}
+                                {% for user in all_users %}
+                                    <tr>
+                                        <!-- ID -->
+                                        <td>{{user.id}}</td>
+                                        <!-- Full Name -->
+                                        <td><a href="/users/show/{{user.id}}" alt="{{user.first_name}} {{user.last_name}}">{{user.first_name}} {{user.last_name}}</a></td>
+                                        <!-- Email -->
+                                        <td>{{user.email}}</td>
+                                        <!-- Created  -->
+                                        <td>{{user.created_at}}</td>
+                                        <!-- User Level  -->
+                                        <td>{% if user.user_level == 0 %} Normal {% endif %}{% if user.user_level == 1 %} Admin {% endif %}</td>                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                      </table>
+                </div>
             </div>
         </div>
     </div>

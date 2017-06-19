@@ -12,6 +12,5 @@
 
 # Beautify:
 + Add bootstrap:
-    - Show User Page
     - Add New User Page
     - Admin Update User Page
