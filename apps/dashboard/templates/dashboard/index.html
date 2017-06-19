@@ -6,35 +6,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- Load Django Static CSS Sheet -->
-    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
+    <!-- Load Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard/bower_components/bootstrap/dist/css/bootstrap.css' %}">
+    <!-- Load jQuery -->
+    <script type="text/javascript" src="{% static 'dashboard/bower_components/jquery/dist/jquery.js' %}"></script>
+    <!-- Load Bootstrap JS -->
+    <script type="text/javascript" src="{% static 'dashboard/bower_components/bootstrap/dist/js/bootstrap.js' %}"></script>
     <title>User Dashboard</title>
 </head>
 <body>
-    <fieldset>
-        <legend>
-            <h1>Welcome to the User Dashboard</h1>
-        </legend>
-        <!-- Logout Success Message -->
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == "index_msg" %}
-                    <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                        {{ message }}
-                    </p>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!-- Nav Header -->
+            <div class="navbar-header">
+                <!-- Mobile Button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- Branding -->
+                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-user"></span> User Dashboard</a>
+            </div>
+            <!-- Nav Collapsible Content -->
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <!-- Left Hand Nav -->
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                </ul>
+                <!-- Right Hand Nav -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/signin"><span class="glyphicon glyphicon-log-in"></span> Sign In</a></li>
+                    <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Columns -->
+    <div class="container">
+        <!-- Hero Pane -->
+        <div class="row">
+            <div class="col-xs-12">
+                <!-- Homepage Messages (mostly Logout) -->
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "index_msg" %}
+                        <div class="alert alert-success alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Success!</strong> {{ message }}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
-            {% endfor %}
-        {% endif %}
-        <a href="/">Home</a>
-        <a href="/signin">Sign In</a>
-        <p>This is an MVC framework which allows for the CRUD events of various Users, Messages and Comments.</p>
-        <a href="/register">Let's Begin</a>
-    </fieldset>
-    <h2>Manage Users</h2>
-    <p>In this application, you'll be able to add, remove and edit users.</p>
-    <h2>Leave Messages</h2>
-    <p>Users can leave messages to other users, and respond to one another.</p>
-    <h2>Edit User Information</h2>
-    <p>Admins can edit other user's information. Normal users can edit only their own.</p>
+                <div class="jumbotron">
+                    <h1><span class="glyphicon glyphicon-user"></span> Welcome to User Dashboard</h1>
+                    <p>This is an MVC framework which allows for the CRUD events of various Users, Messages and Comments.</p>
+                    <form action="/register" method="GET">
+                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-circle-arrow-right"></span> Start</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Info Columns -->
+        <div class="row">
+            <div class="col-sm-4">
+                <h2><span class="glyphicon glyphicon-user"></span> Manage Users</h2>
+                <p>In this application, you'll be able to add, remove and edit users.</p>
+            </div>
+            <div class="col-sm-4">
+                <h2><span class="glyphicon glyphicon-send"></span> Leave Messages</h2>
+                <p>Users can leave messages to other users, and respond to one another.</p>
+            </div>
+            <div class="col-sm-4">
+                <h2><span class="glyphicon glyphicon-edit"></span> Edit User Information</h2>
+                <p>Admins can edit other user's information. Normal users can edit only their own.</p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

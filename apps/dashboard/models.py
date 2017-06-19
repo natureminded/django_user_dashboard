@@ -118,7 +118,7 @@ class UserManager(models.Manager):
         #--- ALL FIELDS ---#
         #------------------#
         # Check that all fields are required:
-        if len(kwargs["email"]) < 5 or len(kwargs["password"]) < 8:
+        if len(kwargs["email"]) < 1 or len(kwargs["password"]) < 1:
             errors.append('All fields are required.')
         else:
             #------------------#
@@ -353,7 +353,7 @@ class UserManager(models.Manager):
             }
             return errors
 
-    def update_description(self, **kwargs):
+    def update_profile_description(self, **kwargs):
         """
         Updates a User's description.
 

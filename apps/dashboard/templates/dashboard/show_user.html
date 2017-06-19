@@ -6,8 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- Load Django Static CSS Sheet -->
-    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
+    <!-- Load Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard/bower_components/bootstrap/dist/css/bootstrap.css' %}">
+    <!-- Load jQuery -->
+    <script type="text/javascript" src="{% static 'dashboard/bower_components/jquery/dist/jquery.js' %}"></script>
+    <!-- Load Bootstrap JS -->
+    <script type="text/javascript" src="{% static 'dashboard/bower_components/bootstrap/dist/js/bootstrap.js' %}"></script>
     <title>User: {{show_user.first_name}} {{show_user.last_name}}</title>
 </head>
 <body>
@@ -37,7 +41,7 @@
         <!-- Message Errors -->
         {% if messages %}
             {% for message in messages %}
-                {% if message.tags == "msg_errors error" %}
+                {% if message.tags == "message_errors error" %}
                 <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
                     {{ message }}
                 </p>
@@ -52,22 +56,30 @@
         <!-- Message -->
         {% for message in user_messages %}
             <div>
-                <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a> wrote:</p>
-                <p>{{message.created_at|timesince}} ago</p>
+                <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a> wrote ({{message.created_at|timesince}} ago):</p>
                 <p>{{message.description}}</p>
                 <!-- Comments -->
                 <div class="comments">
                     <!-- Comment -->
                     {% if message.comment.all %}
                         {% for message in message.comment.all %}
-                            <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a></p>
-                            <p>{{message.created_at|timesince}} ago</p>
+                            <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a> wrote ({{message.created_at|timesince}} ago):</p>
                             <p>{{message.description}}</p>
                         {% endfor %}
                     {% endif %}
                     <!-- New Comment -->
                     <form action="/users/show/{{show_user.id}}/comment" method="POST">
                         {% csrf_token %}
+                        <!-- Comment Errors -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == "comment_errors error" %}
+                                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                    {{ message }}
+                                </p>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                         <!-- Message ID is passed in hidden input -->
                         <input type="hidden" name="message_id" value="{{message.id}}">
                         <!-- Comment Text -->

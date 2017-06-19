@@ -1,8 +1,8 @@
 # Remaining:
-+ Confirm Delete
-+ Comment errors appear in wrong section (they appear by the message field)
 + Deploy
 
++ Have the first user be an admin
+    + Give a message
 
 # Later:
 + clean up error tags -- simple nomenclature, ie: "profile_errors" would become "errors", and thus referenced in the template as `message_tags="profile error"` instead of `message_tags="profile_errors error"`
@@ -11,5 +11,7 @@
 + Setup lots of exceptions (for back button submission on forms -- delete , etc, etc.)
 
 # Beautify:
-+ Add bootstrap
-+ Add jquery fade outs on errors or at least info messages
++ Add bootstrap:
+    - Show User Page
+    - Add New User Page
+    - Admin Update User Page

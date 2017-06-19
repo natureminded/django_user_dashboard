@@ -7,51 +7,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- Load Django Static CSS Sheet -->
-    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
+    <!-- Load Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard/bower_components/bootstrap/dist/css/bootstrap.css' %}">
+    <!-- Load jQuery -->
+    <script type="text/javascript" src="{% static 'dashboard/bower_components/jquery/dist/jquery.js' %}"></script>
+    <!-- Load Bootstrap JS -->
+    <script type="text/javascript" src="{% static 'dashboard/bower_components/bootstrap/dist/js/bootstrap.js' %}"></script>
     <title>User Sign In</title>
 </head>
 
 <body>
-    <!-- User Registration -->
-    <fieldset>
-        <legend>
-            <h1>Register</h1>
-        </legend>
-        <!-- Registration Errors -->
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == "reg_errors" %}
-                <p> {% if message.tags %} class="{{ message.tags }}"{% endif %}
-                    {{ message }}
-                </p>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-        <!-- Registration Form -->
-        <form action="/register" method="POST">
-            <!-- Django-required CSRF Token (to prevent spoofing) -->
-            {% csrf_token %}
-            <label for="first_name"> First Name:
-                <input type="text" name="first_name" id="first_name">
-            </label>
-            <label for="last_name"> Last Name:
-                <input type="text" name="last_name" id="last_name">
-            </label>
-            <label for="email"> Email:
-                <input type="email" name="email" id="email">
-            </label>
-            <label for="password"> Password:
-                <input type="password" name="password" id="password">
-            </label>
-            <label for="confirm_pwd"> Confirm Password:
-                <input type="password" name="confirm_pwd" id="confirm_pwd">
-            </label>
-            <input type="submit" value="Register">
-        </form>
-    </fieldset>
-    <p><a href="/signin">Already have an account? Login</a></p>
-    <p><a href="/">Forget it, take me home.</a></p>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!-- Nav Header -->
+            <div class="navbar-header">
+                <!-- Mobile Button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- Branding -->
+                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-user"></span> User Dashboard</a>
+            </div>
+            <!-- Nav Collapsible Content -->
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <!-- Left Hand Nav -->
+                <ul class="nav navbar-nav">
+                    <li><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                </ul>
+                <!-- Right Hand Nav -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href="/signin"><span class="glyphicon glyphicon-log-in"></span> Sign In</a></li>
+                    <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Columns -->
+    <div class="container">
+        <!-- Registration -->
+        <div class="row">
+            <div class="col-xs-12">
+                <!-- Title -->
+                <h1>Register</h1>
+                <hr>
+                <!-- Registration Form -->
+                <form action="/register" method="POST" class="form-horizontal">
+                    <!-- Django-required CSRF Token (to prevent spoofing) -->
+                    {% csrf_token %}
+                    <!-- Registration Errors -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == "reg_errors" %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>Error!</strong> {{ message }}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First name">
+                        </div>
+                    </p>
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last name">
+                        </div>
+                    </p>
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                        </div>
+                    </p>
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Choose password">
+                        </div>
+                    </p>
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" class="form-control" name="confirm_pwd" id="confirm_pwd" placeholder="Confirm password">
+                        </div>
+                    </p>
+                    <p>
+                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-log-in"></span> Register</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+        <!-- Sign In Text -->
+        <div class="row">
+            <div class="col-xs-12">
+                <p><a href="/signin">Already have an account? <span class="glyphicon glyphicon-log-in"></span> Login</a></p>
+                <p><a href="/">Forget it, take me <span class="glyphicon glyphicon-home"></span> Home</a></p>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

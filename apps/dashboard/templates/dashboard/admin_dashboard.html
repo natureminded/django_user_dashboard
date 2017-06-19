@@ -6,63 +6,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- Load Django Static CSS Sheet -->
-    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
+    <!-- Load Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard/bower_components/bootstrap/dist/css/bootstrap.css' %}">
+    <!-- Load jQuery -->
+    <script type="text/javascript" src="{% static 'dashboard/bower_components/jquery/dist/jquery.js' %}"></script>
+    <!-- Load Bootstrap JS -->
+    <script type="text/javascript" src="{% static 'dashboard/bower_components/bootstrap/dist/js/bootstrap.js' %}"></script>
+    <!-- Dashboard JS -->
+    <script type="text/javascript" src="{% static 'dashboard/js/dashboard.js' %}"></script>
     <title>Administrator Dashboard</title>
 </head>
 <body>
-    <!-- Top Navigation -->
-    <p>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/users/edit">Profile</a>
-        <a href="/logout">Log off</a>
-    </p>
-    <fieldset>
-        <legend>
-            <h1>All Users</h1>
-        </legend>
-        <form action="/users/new" method="GET">
-            <input type="submit" value="Add New User">
-        </form>
-        <!-- Success Messages -->
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == "success" %}
-                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                    {{ message }}
-                </p>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!-- Nav Header -->
+            <div class="navbar-header">
+                <!-- Mobile Button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- Branding -->
+                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-user"></span> User Dashboard</a>
+            </div>
+            <!-- Nav Collapsible Content -->
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <!-- Left Hand Nav -->
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/dashboard"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                    <li><a href="/users/edit"><span class="glyphicon glyphicon-list-alt"></span> Profile</a></li>
+                </ul>
+                <!-- Right Hand Nav -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Off</a></li>
+                    <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Columns -->
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <!-- Title -->
+                <h1>All Users</h1>
+                <hr>
+                <!-- Dashboard Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                        <div class="alert alert-success alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Success!</strong> {{ message }}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
-            {% endfor %}
-        {% endif %}
-        <table>
-        <tr>
-            <th>ID:</th>
-            <th>Name^:</th>
-            <th>Email:</th>
-            <th>Created:</th>
-            <th>User Level:</th>
-            <th>Actions:</th>
-        </tr>
-        <!-- use Django to iterate through items inside of `all_users` dictionary -->
-        {% if all_users %}
-            {% for user in all_users %}
-                <tr>
-                    <!-- ID -->
-                    <td>{{user.id}}</td>
-                    <!-- Full Name -->
-                    <td><a href="/users/show/{{user.id}}" alt="{{user.first_name}} {{user.last_name}}">{{user.first_name}} {{user.last_name}}</a></td>
-                    <!-- Email -->
-                    <td>{{user.email}}</td>
-                    <!-- Created  -->
-                    <td>{{user.created_at}}</td>
-                    <!-- User Level  -->
-                    <td>{% if user.user_level == 0 %} Normal {% endif %}{% if user.user_level == 1 %} Admin {% endif %}</td>
-                    <!-- Actions  -->
-                    <td><a href="/users/edit/{{user.id}}">Edit</a> <a href="/users/edit/{{user.id}}/delete">Remove</a></td>
-                </tr>
-            {% endfor %}
-        {% endif %}
-        </table>
-    </fieldset>
+                <!-- Add New User Button -->
+                <p>
+                    <form action="/users/new" method="GET">
+                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-user"></span> Add New User</button>
+                    </form>
+                </p>
+            </div>
+        </div>
+        <!-- All Users -->
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>ID:</th>
+                        <th>Name^:</th>
+                        <th>Email:</th>
+                        <th>Created:</th>
+                        <th>User Level:</th>
+                        <th>Actions:</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <!-- use Django to iterate through items inside of `all_users` dictionary -->
+                        {% if all_users %}
+                            {% for user in all_users %}
+                                <tr>
+                                    <!-- ID -->
+                                    <td>{{user.id}}</td>
+                                    <!-- Full Name -->
+                                    <td><a href="/users/show/{{user.id}}" alt="{{user.first_name}} {{user.last_name}}">{{user.first_name}} {{user.last_name}}</a></td>
+                                    <!-- Email -->
+                                    <td>{{user.email}}</td>
+                                    <!-- Created  -->
+                                    <td>{{user.created_at}}</td>
+                                    <!-- User Level  -->
+                                    <td>{% if user.user_level == 0 %} Normal {% endif %}{% if user.user_level == 1 %} Admin {% endif %}</td>
+                                    <!-- Actions  -->
+                                    <td><a href="/users/edit/{{user.id}}">Edit</a> {% if logged_in_user.id != user.id %}<a href="/users/edit/{{user.id}}/delete" id="remove">Remove</a>{% endif %}{% if logged_in_user.id == user.id %}<span class="label label-info">You!</span>{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

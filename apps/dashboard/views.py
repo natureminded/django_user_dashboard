@@ -156,7 +156,7 @@ def dashboard(request):
         messages.add_message(request, INDEX_MSG, "You must be logged in to view this page.", extra_tags="index_msg")
         return redirect("/")
 
-def show_user(request, id):
+def show_or_message_user(request, id):
     """If GET, show a user, if POST, send message."""
 
     # Check if message submission:
@@ -176,7 +176,7 @@ def show_user(request, id):
                 print "Message could not be created."
                 # Loop through errors and Generate Django Message for each with custom level and tag:
                 for error in validated["errors"]:
-                    messages.error(request, error, extra_tags="msg_errors")
+                    messages.error(request, error, extra_tags="message_errors")
                 # Reload register page:
                 return redirect("/users/show/" + id)
         except TypeError:
@@ -191,6 +191,34 @@ def show_user(request, id):
             "user_messages": User.objects.get(id=id).messages_received.all().order_by("-created_at"),
         }
         return render(request, "dashboard/show_user.html", user_data)
+
+def comment(request, id):
+    """Comment on a message."""
+
+    # Prepare data for models:
+    comment_data = {
+        "description": request.POST["desc" + "_" + str(request.POST["message_id"])],
+        "sender_id": request.session["user_id"], # logged in user
+        "receiver_id": id, # receipient of message (user whose profile is being viewed)
+        "message_id": request.POST["message_id"], # id of message comment belongs to
+    }
+
+    # Create / validate new comment:
+    validated = Comment.objects.add(**comment_data)
+
+    # If errors, reload user show page with errors:
+    try:
+        if len(validated["errors"]) > 0:
+            print "Comment could not be created."
+            # Loop through errors and Generate Django Message for each with custom level and tag:
+            for error in validated["errors"]:
+                messages.error(request, error, extra_tags="comment_errors")
+            # Reload register page:
+            return redirect("/users/show/" + id)
+    except TypeError:
+        # If validation successful, reload show page:
+        print "Comment passed validation and has been created..."
+        return redirect("/users/show/" + id)
 
 def new_user(request):
     """If GET, load admin new user page, if POST, create new user."""
@@ -232,7 +260,7 @@ def new_user(request):
                 # If validation successful, set session and load dashboard based on user level:
                 print "User passed validation and has been created..."
                 # Create success message:
-                messages.success(request, 'New user ({} {}) has been created.'.format(validated["logged_in_user"].first_name, validated["logged_in_user"].last_name))
+                messages.success(request, 'New user {} {} has been created.'.format(validated["logged_in_user"].first_name, validated["logged_in_user"].last_name))
                 # Redirect to dashboard:
                 return redirect('/dashboard')
 
@@ -248,6 +276,7 @@ def new_user(request):
 
     # In the event the user level is spoofed redirect to dashboard:
     else:
+        print "Session invalid."
         return redirect('/')
 
 def admin_update_user(request, id):
@@ -320,6 +349,11 @@ def admin_update_password(request, id):
 
     print "Admin Password Update Running"
 
+    if request.method == "POST":
+        print "POST"
+    else:
+        print "GET"
+
     try:
         # Check if user has valid session:
         request.session["user_id"]
@@ -366,6 +400,7 @@ def admin_update_password(request, id):
 
     except KeyError:
         # If no session key, go home:
+        print "Session invalid."
         return redirect('/')
 
 def update_profile(request):
@@ -416,6 +451,7 @@ def update_profile(request):
 
     except KeyError:
         # This would only fire if session key is invalid:
+        print "Session invalid."
         return redirect('/')
 
 def update_password(request):
@@ -460,6 +496,7 @@ def update_password(request):
 
     except KeyError:
         # This would only fire if session key is invalid:
+        print "Session invalid."
         return redirect('/')
 
 def update_profile_description(request):
@@ -508,50 +545,28 @@ def update_profile_description(request):
 
     except KeyError:
         # This would only fire if session key is invalid:
+        print "Session invalid."
         return redirect('/')
 
 
 def delete_user(request, id):
     """Delete a user."""
 
+    # Do not allow a user to delete themselves
+    if User.objects.get(id=request.session["user_id"]).id == id:
+        # Create success message:
+        messages.success(request, 'You cannot delete yourself here.')
+        # Return to dashboard:
+        return redirect('/dashboard')
+
     # Delete user by id:
     User.objects.get(id=id).delete()
 
-    # If current user is admin, redirect to admin dashboard:
-    logged_in_user = User.objects.get(id=request.session["user_id"])
-    if logged_in_user.user_level == 1:
-        return redirect('/dashboard/admin')
-    elif logged_in_user.user.level == 0:
-        # Otherwise, redirect to normal user dashboard:
-        return redirect('/dashboard')
+    # Create success message:
+    messages.success(request, 'User deleted.')
 
-def comment(request, id):
-    """Comment on a message."""
-
-    # Prepare data for models:
-    comment_data = {
-        "description": request.POST["desc" + "_" + str(request.POST["message_id"])],
-        "sender_id": request.session["user_id"], # logged in user
-        "receiver_id": id, # receipient of message (user whose profile is being viewed)
-        "message_id": request.POST["message_id"], # id of message comment belongs to
-    }
-
-    # Create / validate new comment:
-    validated = Comment.objects.add(**comment_data)
-
-    # If errors, reload user show page with errors:
-    try:
-        if len(validated["errors"]) > 0:
-            print "Comment could not be created."
-            # Loop through errors and Generate Django Message for each with custom level and tag:
-            for error in validated["errors"]:
-                messages.error(request, error, extra_tags="msg_errors")
-            # Reload register page:
-            return redirect("/users/show/" + id)
-    except TypeError:
-        # If validation successful, reload show page:
-        print "Comment passed validation and has been created..."
-        return redirect("/users/show/" + id)
+    # Return to dashboard:
+    return redirect('/dashboard')
 
 
 def logout(request):
@@ -560,7 +575,7 @@ def logout(request):
     # Deletes session:
     del request.session['user_id']
     # Adds success message:
-    messages.add_message(request, INDEX_MSG, "Successfully logged out.", extra_tags="index_msg")
+    messages.add_message(request, INDEX_MSG, "Logged out.", extra_tags="index_msg")
 
     # Return to index page:
     return redirect("/")
