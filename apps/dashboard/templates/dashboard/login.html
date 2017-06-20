@@ -37,17 +37,17 @@
                 </ul>
                 <!-- Right Hand Nav -->
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="active"><a href="/register"><span class="glyphicon glyphicon-user"></span> Sign In</a></li>
+                    <li class="active"><a href="/register"><span class="glyphicon glyphicon-log-in"></span> Sign In</a></li>
                     <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <!-- Columns -->
-    <div class="container">
+    <div class="container margin-bottom">
         <!-- Sign In -->
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-sm-12">
                 <!-- Title -->
                 <h1>Sign In</h1>
                 <hr>
@@ -68,12 +68,14 @@
                     {% endif %}
                     <p>
                         <div class="input-group">
+                            <span class="input-group-addon">User Email:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
                             <input type="email" class="form-control" name="login_email" id="login_email" placeholder="Email">
                         </div>
                     </p>
                     <p>
                         <div class="input-group">
+                            <span class="input-group-addon">Password:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                             <input type="password" class="form-control" name="login_password" id="login_password" placeholder="Password">
                         </div>
@@ -86,7 +88,7 @@
         </div>
         <!-- Register Text -->
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-sm-12">
                 <p><a href="/register">Don't have an account? <span class="glyphicon glyphicon-log-in"></span> Register</a></p>
                 <p><a href="/">Forget it, take me <span class="glyphicon glyphicon-home"></span> Home</a></p>
             </div>

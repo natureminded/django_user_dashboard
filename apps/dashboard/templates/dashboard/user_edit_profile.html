@@ -29,7 +29,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <!-- Branding -->
-                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-user"></span> User Dashboard</a>
+                <a class="navbar-brand" href="/dashboard"><span class="glyphicon glyphicon-user"></span> User Dashboard</a>
             </div>
             <!-- Nav Collapsible Content -->
             <div class="collapse navbar-collapse" id="myNavbar">
@@ -48,11 +48,11 @@
     </nav>
 
     <!-- Columns -->
-    <div class="container">
+    <div class="container margin-bottom">
 
         <!-- Title -->
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-sm-12">
                 <h2>Edit Profile for {{user.first_name}} {{user.last_name}}</h2>
                 <hr>
             </div>
@@ -60,7 +60,7 @@
 
         <!-- Edit Profile -->
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-sm-12">
                 <!-- Edit Profile Information Form -->
                 <form action="/users/edit" method="POST" class="form-horizontal">
                     <!-- Django-required CSRF Token (to prevent spoofing) -->
@@ -134,7 +134,7 @@
                         <div class="input-group">
                             <span class="input-group-addon">Password:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="password" id="password">
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Choose new password">
                         </div>
                     </p>
                     <!-- Confirm Password -->
@@ -142,7 +142,7 @@
                         <div class="input-group">
                             <span class="input-group-addon">Confirm:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="confirm_pwd" id="confirm_pwd">
+                            <input type="password" class="form-control" name="confirm_pwd" id="confirm_pwd" placeholder="Confirm new password">
                         </div>
                     </p>
                     <!-- Save Password -->
@@ -184,17 +184,22 @@
                     </p>
                 </form>
             </div>
-        </div>
-
-        <!-- Cancel -->
-        <div class="row">
-            <div class="col-xs-12">
-                <form action="/dashboard" method="GET">
-                    <button type="submit" class="btn btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Cancel</button>
+            <div class="col-sm-12">
+                <hr>
+                <form>
+                    <!-- Messages Button -->
+                    <p>
+                        <button type="submit" formaction="/users/show/{{user.id}}" formmethod="GET" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pushpin"></span> View User Messages</button>
+                    </p>
+                </form>
+                <form>
+                    <!-- Cancel Button -->
+                    <p>
+                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
+                    </p>
                 </form>
             </div>
         </div>
-
     </div>
 </body>
 

@@ -7,102 +7,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- Load Django Static CSS Sheet -->
-    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
-    <!-- Load Bootstrap -->
-    <link rel="stylesheet" href="{% static 'dashboard/css/bower_components/bootstrap/dist/css/bootstrap.css' %}">
-    <!-- jQuery -->
-    <script type="text/javascript" src="{% static 'dashboard/js/bower_components/jquery/dist/jquery.js' %}"></script>
+    <!-- Load Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard/bower_components/bootstrap/dist/css/bootstrap.css' %}">
+    <!-- Load jQuery -->
+    <script type="text/javascript" src="{% static 'dashboard/bower_components/jquery/dist/jquery.js' %}"></script>
+    <!-- Load Bootstrap JS -->
+    <script type="text/javascript" src="{% static 'dashboard/bower_components/bootstrap/dist/js/bootstrap.js' %}"></script>
     <title>Admin Add New User</title>
 </head>
 
 <body>
-    <!-- Top Navigation -->
-    <p>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/users/edit">Profile</a>
-        <a href="/logout">Log off</a>
-    </p>
-    <!-- Admin Edit User -->
-    <fieldset>
-        <legend>
-            <h2>Edit User {{user.first_name}} {{user.last_name}}</h2>
-        </legend>
-        <!-- Admin Edit User Error Messages -->
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == "admin_edit_errors error" %}
-                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                    {{ message }}
-                </p>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-        <!-- Admin Edit User Form -->
-        <form action="/users/edit/{{user.id}}" method="POST">
-            <!-- Django-required CSRF Token (to prevent spoofing) -->
-            {% csrf_token %}
-            <label for="email"> Email:
-                <input type="email" name="email" id="email" value={{user.email}}>
-            </label>
-            <label for="first_name"> First Name:
-                <input type="text" name="first_name" id="first_name" value={{user.first_name}}>
-            </label>
-            <label for="last_name"> Last Name:
-                <input type="text" name="last_name" id="last_name" value={{user.last_name}}>
-            </label>
-            <p>
-                <label for="user_level"> User Level:
-                    <select name="user_level" id="user_level">
-                        {% if user.user_level == 0 %}
-                            <option value="0" selected="selected">Normal</option>
-                            <option value="1">Admin</option>
-                        {% endif %}
-                        {% if user.user_level == 1 %}
-                            <option value="0">Normal</option>
-                            <option value="1" selected="selected">Admin</option>
-                        {% endif %}
-                    </select>
-                </label>
-            </p>
-            <input type="submit" value="Save">
-        </form>
-    </fieldset>
-    <!-- Change Password -->
-    <fieldset>
-        <legend>
-            <h2>Change Password</h2>
-        </legend>
-        <!-- Change Password Errors -->
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == "admin_password_errors error" %}
-                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                    {{ message }}
-                </p>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-        <!-- Change Password Form -->
-        <form action="/users/edit/{{user.id}}/password" method="POST">
-            <!-- Django-required CSRF Token (to prevent spoofing) -->
-            {% csrf_token %}
-            <label for="password"> Password:
-                <input type="password" name="password" id="password">
-            </label>
-            <label for="confirm_pwd"> Confirm Password:
-                <input type="password" name="confirm_pwd" id="confirm_pwd">
-            </label>
-            <input type="submit" value="Update Password">
-        </form>
-    </fieldset>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!-- Nav Header -->
+            <div class="navbar-header">
+                <!-- Mobile Button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- Branding -->
+                <a class="navbar-brand" href="/dashboard"><span class="glyphicon glyphicon-user"></span> User Dashboard</a>
+            </div>
+            <!-- Nav Collapsible Content -->
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <!-- Left Hand Nav -->
+                <ul class="nav navbar-nav">
+                    <li><a href="/dashboard"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                    <li><a href="/users/edit"><span class="glyphicon glyphicon-list-alt"></span> Profile</a></li>
+                </ul>
+                <!-- Right Hand Nav -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Off</a></li>
+                    <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav><!-- Columns -->
+    <div class="container margin-bottom">
 
-    <p>
-        <!-- Return To Dashboard -->
-        <form action="/dashboard" method="GET">
-            <input type="submit" value="Return To Dashboard">
-        </form>
-    </p>
+        <!-- Title -->
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Admin Edit {{user.first_name}} {{user.last_name}}</h2>
+                <hr>
+            </div>
+        </div>
+
+        <!-- Admin Edit Profile -->
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- Admin Edit Profile Information Form -->
+                <form action="/users/edit/{{user.id}}" method="POST" class="form-horizontal">
+                    <!-- Django-required CSRF Token (to prevent spoofing) -->
+                    {% csrf_token %}
+                    <!-- Edit Profile Errors -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == "admin_edit_errors error" %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>Error!</strong> {{ message }}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <!-- Email -->
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon">User Email:</span>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                            <input type="email" class="form-control" name="email" id="email" value="{{user.email}}">
+                        </div>
+                    </p>
+                    <!-- First Name -->
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon">First Name:</span>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" class="form-control" name="first_name" id="first_name" value="{{user.first_name}}">
+                        </div>
+                    </p>
+                    <!-- Last Name -->
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon">Last Name:</span>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" class="form-control" name="last_name" id="last_name" value="{{user.last_name}}">
+                        </div>
+                    </p>
+                    <!-- User Level -->
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon">User Level:</span>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-sunglasses"></i></span>
+                            <select name="user_level" id="user_level" class="form-control">
+                                {% if user.user_level == 0 %}
+                                <option value="0" selected="selected">Normal</option>
+                                <option value="1">Admin</option>
+                                {% endif %}
+                                {% if user.user_level == 1 %}
+                                <option value="0">Normal</option>
+                                <option value="1" selected="selected">Admin</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </p>
+                    <!-- Admin Update Profile  -->
+                    <p>
+                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Save</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- Title -->
+                <h2>Admin Update Password</h2>
+                <hr>
+                <!-- Update Password Form -->
+                <form action="/users/edit/{{user.id}}/password" method="POST" class="form-horizontal">
+                    <!-- Django-required CSRF Token (to prevent spoofing) -->
+                    {% csrf_token %}
+                    <!-- Password Errors -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == "admin_password_errors error" %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>Error!</strong> {{ message }}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <!-- Password -->
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon">Password:</span>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Choose new password">
+                        </div>
+                    </p>
+                    <!-- Confirm Password -->
+                    <p>
+                        <div class="input-group">
+                            <span class="input-group-addon">Confirm:</span>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" class="form-control" name="confirm_pwd" id="confirm_pwd" placeholder="Confirm new password">
+                        </div>
+                    </p>
+                    <!-- Save Password -->
+                    <p>
+                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Update Password</button>
+                    </p>
+                </form>
+                <hr>
+                <form>
+                    <!-- Cancel Button -->
+                    <p>
+                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

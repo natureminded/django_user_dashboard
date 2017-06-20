@@ -55,14 +55,8 @@ def login(request):
             the `/dashoard` route determines user level and delivers appropriate
             dashboard template, respectively.
             """
-            if validated["logged_in_user"].user_level == 0:
-                # Redirect to normal user dashboard route:
-                return redirect("/dashboard")
-            elif validated["logged_in_user"].user_level == 1:
-                # Redirect to admin dashboard route:
-                return redirect("/dashboard/admin")
 
-            # Fetch dashboard data and load dashboard page:
+            # Fetch dashboard data and load appropriate dashboard page:
             return redirect("/dashboard")
     else:
         # Otherwise, load login page:
@@ -100,14 +94,16 @@ def register(request):
             print "Setting session data for logged in new user..."
             request.session["user_id"] = validated["logged_in_user"].id
 
-            # Check user level (if 0, load normal user dashboard, if 1, load admin dashboard):
-            if validated["logged_in_user"].user_level == 0:
-                # Redirect to normal user dashboard:
-                return redirect("/dashboard")
-            elif validated["logged_in_user"].user_level == 1:
-                # Redirect to admin dashboard:
-                return redirect("/dashboard/admin")
+            # If this is the first user, set to admin and tell them so:
+            if len(User.objects.all()) == 1:
+                # Set first user to admin:
+                validated["logged_in_user"].user_level = 1
+                validated["logged_in_user"].save()
+                # Set message:
+                messages.success(request, "You are the first user and set to admin! All new users will be normal users -- unless their permissions are changed by you!")
 
+            # Load Dashboard:
+            return redirect('/dashboard')
     else:
         # Otherwise, load registration page:
         return render(request, "dashboard/register.html")
@@ -150,7 +146,7 @@ def dashboard(request):
             # We will not remove the passwords, as this is the admin account.
             return render(request, "dashboard/admin_dashboard.html", admin_data)
 
-    except KeyError:
+    except (KeyError, User.DoesNotExist) as err:
         # If session object not found, load index:
         print "User session not validated."
         messages.add_message(request, INDEX_MSG, "You must be logged in to view this page.", extra_tags="index_msg")
@@ -193,7 +189,12 @@ def show_or_message_user(request, id):
         return render(request, "dashboard/show_user.html", user_data)
 
 def comment(request, id):
-    """Comment on a message."""
+    """
+    Comment on a message.
+
+    "Parameters"
+    - `id` - ID of receiver of comment.
+    """
 
     # Prepare data for models:
     comment_data = {
@@ -222,7 +223,6 @@ def comment(request, id):
 
 def new_user(request):
     """If GET, load admin new user page, if POST, create new user."""
-
 
     # First ensure that only an admin may access this page:
     user = User.objects.get(id=request.session["user_id"])
@@ -284,7 +284,7 @@ def admin_update_user(request, id):
     If GET, load admin edit user page, if POST, admin updates a user.
 
     Parameters:
-    - `id` - Id of the user who we wish to edit.
+    - `id` - ID of the user who we wish to edit.
     """
 
     try:
@@ -550,7 +550,11 @@ def update_profile_description(request):
 
 
 def delete_user(request, id):
-    """Delete a user."""
+    """
+    Delete a user.
+
+    - `id` - ID of user to delete
+    """
 
     # Do not allow a user to delete themselves
     if User.objects.get(id=request.session["user_id"]).id == id:
@@ -572,10 +576,14 @@ def delete_user(request, id):
 def logout(request):
     """Logs out current user."""
 
-    # Deletes session:
-    del request.session['user_id']
-    # Adds success message:
-    messages.add_message(request, INDEX_MSG, "Logged out.", extra_tags="index_msg")
+    try:
+        # Deletes session:
+        del request.session['user_id']
+        # Adds success message:
+        messages.add_message(request, INDEX_MSG, "User logged out.", extra_tags="index_msg")
+
+    except KeyError:
+        pass
 
     # Return to index page:
     return redirect("/")

@@ -44,17 +44,17 @@
         </div>
     </nav>
     <!-- Columns -->
-    <div class="container">
+    <div class="container margin-bottom">
         <!-- Hero Pane -->
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-sm-12">
                 <!-- Homepage Messages (mostly Logout) -->
                 {% if messages %}
                     {% for message in messages %}
                         {% if message.tags == "index_msg" %}
                         <div class="alert alert-success alert-dismissable">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            <strong>Success!</strong> {{ message }}
+                            {{ message }}
                         </div>
                         {% endif %}
                     {% endfor %}
@@ -72,14 +72,17 @@
         <div class="row">
             <div class="col-sm-4">
                 <h2><span class="glyphicon glyphicon-user"></span> Manage Users</h2>
+                <hr>
                 <p>In this application, you'll be able to add, remove and edit users.</p>
             </div>
             <div class="col-sm-4">
                 <h2><span class="glyphicon glyphicon-send"></span> Leave Messages</h2>
+                <hr>
                 <p>Users can leave messages to other users, and respond to one another.</p>
             </div>
             <div class="col-sm-4">
                 <h2><span class="glyphicon glyphicon-edit"></span> Edit User Information</h2>
+                <hr>
                 <p>Admins can edit other user's information. Normal users can edit only their own.</p>
             </div>
         </div>

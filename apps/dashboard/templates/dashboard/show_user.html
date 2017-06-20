@@ -29,7 +29,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <!-- Branding -->
-                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-user"></span> User Dashboard</a>
+                <a class="navbar-brand" href="/dashboard"><span class="glyphicon glyphicon-user"></span> User Dashboard</a>
             </div>
             <!-- Nav Collapsible Content -->
             <div class="collapse navbar-collapse" id="myNavbar">
@@ -51,7 +51,7 @@
         <!-- All Users -->
         <div class="row">
             <!-- User Information -->
-            <div class="col-xs-12">
+            <div class="col-sm-12">
                 <!-- Title -->
                 <h1>{{show_user.first_name}} {{show_user.last_name}}</h1>
                 <hr>
@@ -74,7 +74,7 @@
                 {% endif %}
             </div>
             <!-- Leave Message -->
-            <div class="col-xs-12">
+            <div class="col-sm-12">
                 <!-- Title -->
                 <h1>Leave a Message for {{show_user.first_name}}</h1>
                 <hr>
@@ -108,7 +108,7 @@
                 </form>
             </div>
             <!-- Current Messages -->
-            <div class="col-xs-12">
+            <div class="col-sm-12">
                 <h1>Messages</h1>
                 <hr>
                 <!-- Current Messages -->
@@ -152,17 +152,24 @@
                                     <div class="input-group">
                                         <span class="input-group-addon">Comment:</span>
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-pushpin"></i></span>
-                                        <textarea name="desc_{{message.id}}" id="desc_{{message.id}}" rows="3" class="form-control" placeholder="Enter a message for {{show_user.first_name}}"></textarea>
+                                        <textarea name="desc_{{message.id}}" id="desc_{{message.id}}" rows="3" class="form-control" placeholder="Enter a comment"></textarea>
                                     </div>
                                 </p>
-                                <!-- Save Description -->
+                                <!-- Comment Button -->
                                 <p>
-                                    <button type="submit" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pushpin"></span> Comment</button>
+                                    <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-comment"></span> Comment</button>
                                 </p>
                             </form>
                         </div>
                     {% endfor %}
                 {% endif %}
+                <hr>
+                <form>
+                    <!-- Cancel Button -->
+                    <p>
+                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
+                    </p>
+                </form>
             </div>
         </div>
     </div>

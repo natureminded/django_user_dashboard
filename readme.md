@@ -9,8 +9,3 @@
 + modularize models.py
 + Style, clean up, refactor.
 + Setup lots of exceptions (for back button submission on forms -- delete , etc, etc.)
-
-# Beautify:
-+ Add bootstrap:
-    - Add New User Page
-    - Admin Update User Page
