@@ -1,0 +1,21 @@
+{
+  "name": "dashboard",
+  "homepage": "https://github.com/natureminded/django_user_dashboard",
+  "authors": [
+    "natureminded <natureminded@users.noreply.github.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
