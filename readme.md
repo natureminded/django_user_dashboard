@@ -9,9 +9,10 @@ This project allows users to register or login, with validations and encryption 
 + `MVC` architecture
 
 ## Notes:
-+ Be sure to `bower install` the `bower.json` file in the `apps/dashboard/static/dashboard` folder.
++ Be sure to `bower install` the `bower.json` file in the `apps/dashboard/static/dashboard` folder and to pip install `requirements.txt`.
 
 ### Later Features / Changes Log:
++ Add bower components folder to git ignore and remove from repo
 + Clean up error tags -- simplify nomenclature, ie: "profile_errors" would become "errors", and thus referenced in the template as `message_tags="profile error"` instead of `message_tags="profile_errors error"`
 + Refactor, Modularize `models.py`.
 + Setup lots of exceptions (for back button submission on forms -- delete , etc, etc.) IE, make sure various usage cases aren't missed causing your app to break.
