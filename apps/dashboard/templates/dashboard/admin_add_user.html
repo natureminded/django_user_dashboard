@@ -7,6 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Load Custom Stylesheet -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
     <!-- Load Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'dashboard/bower_components/bootstrap/dist/css/bootstrap.css' %}">
     <!-- Load jQuery -->
@@ -41,7 +43,7 @@
                 <!-- Right Hand Nav -->
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Off</a></li>
-                    <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
+                    <li><a href="https://github.com/twknab" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
                 </ul>
             </div>
         </div>
@@ -72,42 +74,42 @@
                     <p>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First name">
+                            <input type="text" class="form-control input-lg" name="first_name" id="first_name" placeholder="First name">
                         </div>
                     </p>
                     <p>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last name">
+                            <input type="text" class="form-control input-lg" name="last_name" id="last_name" placeholder="Last name">
                         </div>
                     </p>
                     <p>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                            <input type="email" class="form-control input-lg" name="email" id="email" placeholder="Email">
                         </div>
                     </p>
                     <p>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Choose password">
+                            <input type="password" class="form-control input-lg" name="password" id="password" placeholder="Choose password">
                         </div>
                     </p>
                     <p>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="confirm_pwd" id="confirm_pwd" placeholder="Confirm password">
+                            <input type="password" class="form-control input-lg" name="confirm_pwd" id="confirm_pwd" placeholder="Confirm password">
                         </div>
                     </p>
                     <p>
-                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-user"></span> Create</button>
+                        <button type="submit" class="btn btn-lg btn-primary btn-block"><span class="glyphicon glyphicon-user"></span> Create</button>
                     </p>
                 </form>
                 <hr>
                 <form>
                     <!-- Cancel Button -->
                     <p>
-                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
+                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-lg btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
                     </p>
                 </form>
             </div>

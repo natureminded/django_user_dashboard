@@ -2,10 +2,23 @@
 /*--- MAIN STYLINGS---*/
 /*--------------------*/
 
+ul, p {
+    font-size: 16px;
+}
+
 .comments {
     margin-left: 30px;
 }
 
 .margin-bottom {
     margin-bottom: 30px;
+}
+
+textarea#description.edit-description {
+	height: 102px;
+}
+
+.input-group .form-control:focus {
+	z-index: 3;
+	border: 1px solid #97B279;
 }

@@ -95,12 +95,12 @@ def register(request):
             request.session["user_id"] = validated["logged_in_user"].id
 
             # If this is the first user, set to admin and tell them so:
-            if len(User.objects.all()) == 1:
+            if len(User.objects.all()) <= 5:
                 # Set first user to admin:
                 validated["logged_in_user"].user_level = 1
                 validated["logged_in_user"].save()
                 # Set message:
-                messages.success(request, "You are the first user and set to admin! All new users will be normal users -- unless their permissions are changed by you!")
+                messages.success(request, "As one of the first 5 users, you are an admin! After all 5 admin accounts are created, new users will be normal level unless changed by you!")
 
             # Load Dashboard:
             return redirect('/dashboard')

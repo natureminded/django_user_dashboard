@@ -41,7 +41,7 @@
                 <!-- Right Hand Nav -->
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Off</a></li>
-                    <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
+                    <li><a href="https://github.com/twknab" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
                 </ul>
             </div>
         </div>
@@ -56,10 +56,10 @@
                 <h1>{{show_user.first_name}} {{show_user.last_name}}</h1>
                 <hr>
                 <ul class="list-group">
-                    <li class="list-group-item"><strong>Registered At:</strong> {{show_user.created_at}}</li>
-                    <li class="list-group-item"><strong>User ID:</strong> {{show_user.id}}</li>
-                    <li class="list-group-item"><strong>Email Address:</strong> {{show_user.email}}</li>
-                    <li class="list-group-item"><strong>Description:</strong> {{show_user.description}}</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> <strong>Registered At:</strong> {{show_user.created_at}}</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-list-alt"></span> <strong>User ID:</strong> {{show_user.id}}</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-envelope"></span> <strong>Email Address:</strong> {{show_user.email}}</li>
+                    <li class="list-group-item"><span class="glyphicon glyphicon-bullhorn"></span> <strong>Description:</strong> {{show_user.description}}</li>
                 </ul>
 
                 {% if messages %}
@@ -76,7 +76,7 @@
             <!-- Leave Message -->
             <div class="col-sm-12">
                 <!-- Title -->
-                <h1>Leave a Message for {{show_user.first_name}}</h1>
+                <h2>Message {{show_user.first_name}} {{show_user.last_name}}</h2>
                 <hr>
                 <!-- Message Form -->
                 <form action="/users/show/{{show_user.id}}" method="POST" class="form-horizontal">
@@ -96,27 +96,25 @@
                     <!-- Message -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">Message:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-pushpin"></i></span>
-                            <textarea name="description" id="description" rows="3" class="form-control" placeholder="Enter a message for {{show_user.first_name}}"></textarea>
+                            <textarea name="description" id="description" rows="3" class="form-control input-lg" placeholder="Enter a message for {{show_user.first_name}} {{show_user.last_name}}"></textarea>
                         </div>
                     </p>
                     <!-- Post Message -->
                     <p>
-                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-pushpin"></span> Post</button>
+                        <button type="submit" class="btn btn-lg btn-primary btn-block"><span class="glyphicon glyphicon-pushpin"></span> Post Message</button>
                     </p>
                 </form>
             </div>
             <!-- Current Messages -->
+            {% if user_messages %}
             <div class="col-sm-12">
-                <h1>Messages</h1>
+                <h2>Messages</h2>
                 <hr>
-                <!-- Current Messages -->
-                {% if user_messages %}
                     <!-- Message -->
                     {% for message in user_messages %}
                         <div class="well">
-                            <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a>, <em>{{message.created_at|timesince}} ago</em>, wrote:</p>
+                            <p><span class="glyphicon glyphicon-pushpin"></span> <strong><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a></strong>, <em>{{message.created_at|timesince}} ago</em>, wrote:</p>
                             <p>{{message.description}}</p>
                         </div>
                         <!-- Comments -->
@@ -125,7 +123,7 @@
                             {% if message.comment.all %}
                                 {% for message in message.comment.all %}
                                     <div class="well">
-                                        <p><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a>, <em>{{message.created_at|timesince}} ago</em> wrote:</p>
+                                        <p><span class="glyphicon glyphicon-pushpin"></span> <strong><a href="/users/show/{{message.sender.id}}">{{message.sender.first_name}} {{message.sender.last_name}}</a></strong>, <em>{{message.created_at|timesince}} ago</em> wrote:</p>
                                         <p>{{message.description}}</p>
                                     </div>
                                 {% endfor %}
@@ -150,27 +148,26 @@
                                 <!-- Comment -->
                                 <p>
                                     <div class="input-group">
-                                        <span class="input-group-addon">Comment:</span>
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-pushpin"></i></span>
-                                        <textarea name="desc_{{message.id}}" id="desc_{{message.id}}" rows="3" class="form-control" placeholder="Enter a comment"></textarea>
+                                        <textarea name="desc_{{message.id}}" id="desc_{{message.id}}" rows="3" class="form-control input-lg" placeholder="Enter a comment"></textarea>
                                     </div>
                                 </p>
                                 <!-- Comment Button -->
                                 <p>
-                                    <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-comment"></span> Comment</button>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block"><span class="glyphicon glyphicon-comment"></span> Post Comment</button>
                                 </p>
                             </form>
                         </div>
                     {% endfor %}
-                {% endif %}
                 <hr>
                 <form>
                     <!-- Cancel Button -->
                     <p>
-                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
+                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-lg btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
                     </p>
                 </form>
             </div>
+            {% endif %}
         </div>
     </div>
 </body>

@@ -7,6 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Load Custom Stylesheet -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
     <!-- Load Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'dashboard/bower_components/bootstrap/dist/css/bootstrap.css' %}">
     <!-- Load jQuery -->
@@ -41,7 +43,7 @@
                 <!-- Right Hand Nav -->
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Off</a></li>
-                    <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
+                    <li><a href="https://github.com/twknab" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
                 </ul>
             </div>
         </div>
@@ -79,35 +81,32 @@
                     <!-- Email -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">User Email:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                            <input type="email" class="form-control" name="email" id="email" value="{{user.email}}">
+                            <input type="email" class="form-control input-lg" name="email" id="email" value="{{user.email}}" placeholder="User Email">
                         </div>
                     </p>
                     <!-- First Name -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">First Name:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" class="form-control" name="first_name" id="first_name" value="{{user.first_name}}">
+                            <input type="text" class="form-control input-lg" name="first_name" id="first_name" value="{{user.first_name}}" placeholder="First Name">
                         </div>
                     </p>
                     <!-- Last Name -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">Last Name:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" class="form-control" name="last_name" id="last_name" value="{{user.last_name}}">
+                            <input type="text" class="form-control input-lg" name="last_name" id="last_name" value="{{user.last_name}}" placeholder="Last Name">
                         </div>
                     </p>
                     <!-- Update Profile  -->
                     <p>
-                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Save</button>
+                        <button type="submit" class="btn btn-lg btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Save Details</button>
                     </p>
                 </form>
             </div>
         </div>
-
+<hr>
         <!-- Change Password -->
         <div class="row">
             <div class="col-sm-6">
@@ -132,22 +131,20 @@
                     <!-- Password -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">Password:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Choose new password">
+                            <input type="password" class="form-control input-lg" name="password" id="password" placeholder="Choose new password">
                         </div>
                     </p>
                     <!-- Confirm Password -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">Confirm:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="confirm_pwd" id="confirm_pwd" placeholder="Confirm new password">
+                            <input type="password" class="form-control input-lg" name="confirm_pwd" id="confirm_pwd" placeholder="Type new password again">
                         </div>
                     </p>
                     <!-- Save Password -->
                     <p>
-                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Update Password</button>
+                        <button type="submit" class="btn btn-lg btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Update Password</button>
                     </p>
                 </form>
             </div>
@@ -173,14 +170,13 @@
                     <!-- Description -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">Description:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-bullhorn"></i></span>
-                            <textarea name="description" id="description" rows="3" class="form-control">{{user.description}}</textarea>
+                            <textarea name="description" id="description" rows="3" class="form-control input-lg edit-description">{{user.description}}</textarea>
                         </div>
                     </p>
                     <!-- Save Description -->
                     <p>
-                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Save</button>
+                        <button type="submit" class="btn btn-lg btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Save Description</button>
                     </p>
                 </form>
             </div>
@@ -189,18 +185,19 @@
                 <form>
                     <!-- Messages Button -->
                     <p>
-                        <button type="submit" formaction="/users/show/{{user.id}}" formmethod="GET" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pushpin"></span> View User Messages</button>
+                        <button type="submit" formaction="/users/show/{{user.id}}" formmethod="GET" class="btn btn-lg btn-default btn-block"><span class="glyphicon glyphicon-pushpin"></span> View User Messages</button>
                     </p>
                 </form>
                 <form>
                     <!-- Cancel Button -->
                     <p>
-                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
+                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-lg btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
                     </p>
                 </form>
             </div>
         </div>
     </div>
+    <hr>
 </body>
 
 </html>

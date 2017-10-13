@@ -1,8 +1,8 @@
 {
   "name": "dashboard",
-  "homepage": "https://github.com/natureminded/django_user_dashboard",
+  "homepage": "https://github.com/twknab/django_user_dashboard",
   "authors": [
-    "natureminded <natureminded@users.noreply.github.com>"
+    "twknab <twknab@users.noreply.github.com>"
   ],
   "description": "",
   "main": "",

@@ -7,13 +7,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Load Custom Stylesheet -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
     <!-- Load Bootstrap CSS -->
     <link rel="stylesheet" href="{% static 'dashboard/bower_components/bootstrap/dist/css/bootstrap.css' %}">
     <!-- Load jQuery -->
     <script type="text/javascript" src="{% static 'dashboard/bower_components/jquery/dist/jquery.js' %}"></script>
     <!-- Load Bootstrap JS -->
     <script type="text/javascript" src="{% static 'dashboard/bower_components/bootstrap/dist/js/bootstrap.js' %}"></script>
-    <title>Admin Add New User</title>
+    <title>Admin Edit {{user.first_name}} {{user.last_name}}</title>
 </head>
 
 <body>
@@ -41,7 +43,7 @@
                 <!-- Right Hand Nav -->
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Off</a></li>
-                    <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
+                    <li><a href="https://github.com/twknab" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
                 </ul>
             </div>
         </div>
@@ -77,33 +79,30 @@
                     <!-- Email -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">User Email:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                            <input type="email" class="form-control" name="email" id="email" value="{{user.email}}">
+                            <input type="email" class="form-control input-lg" name="email" id="email" value="{{user.email}}" placeholder="User Email">
                         </div>
                     </p>
                     <!-- First Name -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">First Name:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" class="form-control" name="first_name" id="first_name" value="{{user.first_name}}">
+                            <input type="text" class="form-control input-lg" name="first_name" id="first_name" value="{{user.first_name}}" placeholder="First Name">
                         </div>
                     </p>
                     <!-- Last Name -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">Last Name:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" class="form-control" name="last_name" id="last_name" value="{{user.last_name}}">
+                            <input type="text" class="form-control input-lg" name="last_name" id="last_name" value="{{user.last_name}}" placeholder="Last Name">
                         </div>
                     </p>
                     <!-- User Level -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">User Level:</span>
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-sunglasses"></i></span>
-                            <select name="user_level" id="user_level" class="form-control">
+                            <span class="input-group-addon">Level</span>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-triangle-right"></i></span>
+                            <select name="user_level" id="user_level" class="form-control input-lg">
                                 {% if user.user_level == 0 %}
                                 <option value="0" selected="selected">Normal</option>
                                 <option value="1">Admin</option>
@@ -117,7 +116,7 @@
                     </p>
                     <!-- Admin Update Profile  -->
                     <p>
-                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Save</button>
+                        <button type="submit" class="btn btn-lg btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Save</button>
                     </p>
                 </form>
             </div>
@@ -147,29 +146,27 @@
                     <!-- Password -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">Password:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Choose new password">
+                            <input type="password" class="form-control input-lg" name="password" id="password" placeholder="Choose new password">
                         </div>
                     </p>
                     <!-- Confirm Password -->
                     <p>
                         <div class="input-group">
-                            <span class="input-group-addon">Confirm:</span>
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" name="confirm_pwd" id="confirm_pwd" placeholder="Confirm new password">
+                            <input type="password" class="form-control input-lg" name="confirm_pwd" id="confirm_pwd" placeholder="Type new password again">
                         </div>
                     </p>
                     <!-- Save Password -->
                     <p>
-                        <button type="submit" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Update Password</button>
+                        <button type="submit" class="btn btn-lg btn-primary btn-block"><span class="glyphicon glyphicon-floppy-save"></span> Update Password</button>
                     </p>
                 </form>
                 <hr>
                 <form>
                     <!-- Cancel Button -->
                     <p>
-                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
+                        <button type="submit" formaction="/dashboard" formmethod="GET" class="btn btn-lg btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Return to Dashboard</button>
                     </p>
                 </form>
             </div>

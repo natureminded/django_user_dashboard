@@ -38,7 +38,7 @@
                 <!-- Right Hand Nav -->
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/signin"><span class="glyphicon glyphicon-log-in"></span> Sign In</a></li>
-                    <li><a href="https://github.com/natureminded" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
+                    <li><a href="https://github.com/twknab" target="_blank"><span class="glyphicon glyphicon-new-window"></span> By Tim Knab</a></li>
                 </ul>
             </div>
         </div>
@@ -60,10 +60,10 @@
                     {% endfor %}
                 {% endif %}
                 <div class="jumbotron">
-                    <h1><span class="glyphicon glyphicon-user"></span> Welcome to User Dashboard</h1>
-                    <p>This is an MVC framework which allows for the CRUD events of various Users, Messages and Comments.</p>
+                    <h1><span class="glyphicon glyphicon-user"></span> User Dashboard</h1>
+                    <p>an MVC architectured application which allows `CRUD` events for Users, Messages and Comments.</p>
                     <form action="/register" method="GET">
-                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-circle-arrow-right"></span> Start</button>
+                        <button type="submit" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-circle-arrow-right"></span> Start</button>
                     </form>
                 </div>
             </div>
@@ -71,21 +71,22 @@
         <!-- Info Columns -->
         <div class="row">
             <div class="col-sm-4">
-                <h2><span class="glyphicon glyphicon-user"></span> Manage Users</h2>
+                <h2><span class="glyphicon glyphicon-user"></span> Manage</h2>
                 <hr>
-                <p>In this application, you'll be able to add, remove and edit users.</p>
+                <p>In this application, Admins are able to add, remove and edit other users.</p>
             </div>
             <div class="col-sm-4">
-                <h2><span class="glyphicon glyphicon-send"></span> Leave Messages</h2>
+                <h2><span class="glyphicon glyphicon-send"></span> Message</h2>
                 <hr>
                 <p>Users can leave messages to other users, and respond to one another.</p>
             </div>
             <div class="col-sm-4">
-                <h2><span class="glyphicon glyphicon-edit"></span> Edit User Information</h2>
+                <h2><span class="glyphicon glyphicon-edit"></span> Edit</h2>
                 <hr>
-                <p>Admins can edit other user's information. Normal users can edit only their own.</p>
+                <p>Admins can edit other user's information. Normal users can edit their own profile.</p>
             </div>
         </div>
+        <hr>
     </div>
 </body>
 </html>
